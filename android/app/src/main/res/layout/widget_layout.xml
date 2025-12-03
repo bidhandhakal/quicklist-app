@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/widget_background">
+
+    <!-- Header -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="QuickList"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#6750A4"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- Stats Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="16dp">
+
+        <!-- Total Tasks -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/stat_card_background"
+            android:padding="12dp"
+            android:layout_marginEnd="8dp">
+            
+            <TextView
+                android:id="@+id/total_tasks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#1C1B1F"/>
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total"
+                android:textSize="12sp"
+                android:textColor="#49454F"/>
+        </LinearLayout>
+
+        <!-- Active Tasks -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/stat_card_background"
+            android:padding="12dp"
+            android:layout_marginEnd="8dp">
+            
+            <TextView
+                android:id="@+id/active_tasks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#F57C00"/>
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Active"
+                android:textSize="12sp"
+                android:textColor="#49454F"/>
+        </LinearLayout>
+
+        <!-- Completed Tasks -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/stat_card_background"
+            android:padding="12dp">
+            
+            <TextView
+                android:id="@+id/completed_tasks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#388E3C"/>
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Done"
+                android:textSize="12sp"
+                android:textColor="#49454F"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Next Task -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/next_task_background"
+        android:padding="12dp">
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next Task"
+            android:textSize="12sp"
+            android:textColor="#49454F"
+            android:layout_marginBottom="4dp"/>
+        
+        <TextView
+            android:id="@+id/next_task_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No upcoming tasks"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#1C1B1F"
+            android:maxLines="2"
+            android:ellipsize="end"/>
+    </LinearLayout>
+
+</LinearLayout>
