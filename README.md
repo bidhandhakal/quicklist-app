@@ -12,6 +12,14 @@ A modern, feature-rich To-Do List application built with Flutter featuring a cle
 - 🔔 **Smart Notifications** - Task reminders and deadline alerts using flutter_local_notifications
 - 🎨 **Beautiful Animations** - Smooth transitions and animated splash screen
 
+### 🎮 Gamification Features (NEW!)
+
+- 🎯 **Daily Goals** - Set and track daily task completion targets
+- 🔥 **Streaks** - Build consecutive day streaks by achieving daily goals
+- 🏆 **Achievements & Badges** - Unlock 16+ achievements across 6 categories
+- 💬 **Motivational Quotes** - Daily inspirational messages to keep you motivated
+- 📊 **Statistics Dashboard** - Track lifetime productivity metrics
+
 ### Task Organization
 
 - 📂 **Categories** - 8 predefined categories (Work, Personal, Shopping, Health, Home, Learning, Finance, Other)

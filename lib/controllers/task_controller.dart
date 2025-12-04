@@ -5,12 +5,14 @@ import '../services/local_storage_service.dart';
 import '../services/task_reminder_service.dart';
 import '../services/home_widget_service.dart';
 import '../services/interstitial_ad_manager.dart';
+import '../services/gamification_service.dart';
 
 class TaskController extends ChangeNotifier {
   final LocalStorageService _storageService = LocalStorageService.instance;
   final TaskReminderService _reminderService = TaskReminderService.instance;
   final HomeWidgetService _widgetService = HomeWidgetService.instance;
   final InterstitialAdManager _adManager = InterstitialAdManager();
+  final GamificationService _gamificationService = GamificationService.instance;
   final Uuid _uuid = const Uuid();
 
   int _completedTasksCounter = 0;
@@ -121,6 +123,9 @@ class TaskController extends ChangeNotifier {
       await _reminderService.scheduleTaskReminder(task);
     }
 
+    // Track task creation in gamification
+    await _gamificationService.onTaskCreated();
+
     await loadTasks();
   }
 
@@ -166,12 +171,15 @@ class TaskController extends ChangeNotifier {
 
     await updateTask(updatedTask);
 
-    // Show interstitial ad every 5 task completions
+    // Track task completion/uncompletion in gamification
     if (!task.isCompleted) {
+      await _gamificationService.onTaskCompleted();
       _completedTasksCounter++;
       if (_completedTasksCounter % 5 == 0) {
         _adManager.showAd();
       }
+    } else {
+      await _gamificationService.onTaskUncompleted();
     }
   }
 

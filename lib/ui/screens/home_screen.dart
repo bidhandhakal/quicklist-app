@@ -3,9 +3,12 @@ import 'package:provider/provider.dart';
 import '../../controllers/task_controller.dart';
 import '../../config/routes.dart';
 import '../../utils/constants.dart';
+import '../../services/gamification_service.dart';
 import '../widgets/task_tile.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/banner_ad_widget.dart';
+import '../widgets/daily_goal_card.dart';
+import '../widgets/streak_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -49,7 +52,8 @@ class _HomeScreenState extends State<HomeScreen>
               _buildStatsCards(taskController),
 
               // Tabs
-              Container(
+              Material(
+                elevation: 2,
                 color: Theme.of(context).colorScheme.surface,
                 child: TabBar(
                   controller: _tabController,
@@ -58,6 +62,7 @@ class _HomeScreenState extends State<HomeScreen>
                     context,
                   ).colorScheme.onSurfaceVariant,
                   indicatorColor: Theme.of(context).colorScheme.primary,
+                  indicatorWeight: 3,
                   tabs: const [
                     Tab(text: 'All'),
                     Tab(text: 'Active'),
@@ -103,19 +108,35 @@ class _HomeScreenState extends State<HomeScreen>
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
       automaticallyImplyLeading: false,
-      title: _isSearching
-          ? TextField(
-              controller: _searchController,
-              autofocus: true,
-              decoration: const InputDecoration(
-                hintText: 'Search tasks...',
-                border: InputBorder.none,
-              ),
-              onChanged: (value) {
-                context.read<TaskController>().setSearchQuery(value);
-              },
-            )
-          : const Text(AppConstants.appName),
+      title: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        transitionBuilder: (child, animation) {
+          return FadeTransition(
+            opacity: animation,
+            child: SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(0, -0.2),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            ),
+          );
+        },
+        child: _isSearching
+            ? TextField(
+                key: const ValueKey('search'),
+                controller: _searchController,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  hintText: 'Search tasks...',
+                  border: InputBorder.none,
+                ),
+                onChanged: (value) {
+                  context.read<TaskController>().setSearchQuery(value);
+                },
+              )
+            : const Text(AppConstants.appName, key: ValueKey('title')),
+      ),
       actions: [
         IconButton(
           icon: Icon(_isSearching ? Icons.close : Icons.search),
@@ -165,35 +186,74 @@ class _HomeScreenState extends State<HomeScreen>
   }
 
   Widget _buildStatsCards(TaskController taskController) {
+    final gamificationService = GamificationService.instance;
+
     return Container(
-      padding: const EdgeInsets.all(16),
-      child: Row(
+      padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
+      child: Column(
         children: [
-          Expanded(
-            child: _buildStatCard(
-              icon: Icons.checklist_rounded,
-              label: 'Total',
-              count: taskController.totalTasks,
-              color: AppColors.primary,
-            ),
+          // Daily Goal and Streak Row
+          ListenableBuilder(
+            listenable: gamificationService,
+            builder: (context, _) {
+              return Row(
+                children: [
+                  Expanded(
+                    child: DailyGoalCard(
+                      targetTasks: gamificationService.dailyGoal.targetTasks,
+                      completedTasks:
+                          gamificationService.dailyGoal.todayCompleted,
+                      onTap: () =>
+                          Navigator.pushNamed(context, AppRoutes.gamification),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: InkWell(
+                      onTap: () =>
+                          Navigator.pushNamed(context, AppRoutes.gamification),
+                      child: StreakCard(
+                        currentStreak: gamificationService.streak.currentStreak,
+                        longestStreak: gamificationService.streak.longestStreak,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: _buildStatCard(
-              icon: Icons.pending_actions_rounded,
-              label: 'Active',
-              count: taskController.incompleteTasksCount,
-              color: AppColors.mediumPriority,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: _buildStatCard(
-              icon: Icons.warning_rounded,
-              label: 'Overdue',
-              count: taskController.overdueTasksCount,
-              color: AppColors.highPriority,
-            ),
+          const SizedBox(height: 16),
+
+          // Stats Row
+          Row(
+            children: [
+              Expanded(
+                child: _buildStatCard(
+                  icon: Icons.checklist_rounded,
+                  label: 'Total',
+                  count: taskController.totalTasks,
+                  color: AppColors.primary,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildStatCard(
+                  icon: Icons.pending_actions_rounded,
+                  label: 'Active',
+                  count: taskController.incompleteTasksCount,
+                  color: AppColors.mediumPriority,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _buildStatCard(
+                  icon: Icons.warning_rounded,
+                  label: 'Overdue',
+                  count: taskController.overdueTasksCount,
+                  color: AppColors.highPriority,
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -255,15 +315,25 @@ class _HomeScreenState extends State<HomeScreen>
     }
 
     if (tasks.isEmpty) {
-      return EmptyState(
-        icon: showCompleted ? Icons.task_alt_rounded : Icons.inbox_rounded,
-        title: showCompleted
-            ? 'No completed tasks'
-            : AppConstants.noTasksMessage,
-        message: showCompleted
-            ? 'Complete tasks to see them here'
-            : AppConstants.addTaskMessage,
-      );
+      String message;
+      String title;
+      IconData icon;
+
+      if (showCompleted) {
+        icon = Icons.task_alt_rounded;
+        title = 'No completed tasks yet';
+        message = '🎯 Complete tasks to build your streak!';
+      } else if (showActive) {
+        icon = Icons.celebration_rounded;
+        title = 'All caught up!';
+        message = '✨ You\'ve completed all your tasks. Great job!';
+      } else {
+        icon = Icons.inbox_rounded;
+        title = AppConstants.noTasksMessage;
+        message = '💡 ${AppConstants.addTaskMessage}';
+      }
+
+      return EmptyState(icon: icon, title: title, message: message);
     }
 
     return RefreshIndicator(
@@ -271,7 +341,7 @@ class _HomeScreenState extends State<HomeScreen>
         await taskController.loadTasks();
       },
       child: ListView.builder(
-        padding: const EdgeInsets.only(bottom: 80),
+        padding: const EdgeInsets.fromLTRB(0, 8, 0, 80),
         itemCount: tasks.length,
         itemBuilder: (context, index) {
           final task = tasks[index];
@@ -294,15 +364,16 @@ class _HomeScreenState extends State<HomeScreen>
     return BottomNavigationBar(
       currentIndex: 0,
       onTap: (index) {
+        if (index == 0) {
+          // Already on home - scroll to top if tapped again
+          return;
+        }
         switch (index) {
-          case 0:
-            // Already on home
-            break;
           case 1:
             Navigator.pushNamed(context, AppRoutes.category);
             break;
           case 2:
-            Navigator.pushNamed(context, AppRoutes.calendar);
+            Navigator.pushNamed(context, AppRoutes.gamification);
             break;
         }
       },
@@ -313,8 +384,8 @@ class _HomeScreenState extends State<HomeScreen>
           label: 'Categories',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.calendar_month_rounded),
-          label: 'Calendar',
+          icon: Icon(Icons.emoji_events_rounded),
+          label: 'Achievements',
         ),
       ],
     );

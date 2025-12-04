@@ -1,6 +1,9 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import '../models/task_model.dart';
 import '../models/category_model.dart';
+import '../models/achievement_model.dart';
+import '../models/daily_goal_model.dart';
+import '../models/streak_model.dart';
 import '../utils/constants.dart';
 
 class LocalStorageService {
@@ -26,6 +29,18 @@ class LocalStorageService {
       }
       if (!Hive.isAdapterRegistered(4)) {
         Hive.registerAdapter(CategoryAdapter());
+      }
+      if (!Hive.isAdapterRegistered(4)) {
+        Hive.registerAdapter(AchievementAdapter());
+      }
+      if (!Hive.isAdapterRegistered(5)) {
+        Hive.registerAdapter(AchievementTypeAdapter());
+      }
+      if (!Hive.isAdapterRegistered(6)) {
+        Hive.registerAdapter(DailyGoalAdapter());
+      }
+      if (!Hive.isAdapterRegistered(7)) {
+        Hive.registerAdapter(StreakAdapter());
       }
 
       // Open boxes

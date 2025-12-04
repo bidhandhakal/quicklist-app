@@ -138,6 +138,36 @@ class CategoryScreen extends StatelessWidget {
           const BannerAdWidget(),
         ],
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: 1,
+        onTap: (index) {
+          switch (index) {
+            case 0:
+              Navigator.pushReplacementNamed(context, AppRoutes.home);
+              break;
+            case 1:
+              // Already on categories
+              break;
+            case 2:
+              Navigator.pushReplacementNamed(context, AppRoutes.gamification);
+              break;
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_rounded),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.category_rounded),
+            label: 'Categories',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.emoji_events_rounded),
+            label: 'Achievements',
+          ),
+        ],
+      ),
     );
   }
 }

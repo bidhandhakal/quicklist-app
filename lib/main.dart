@@ -12,6 +12,7 @@ import 'services/app_open_ad_manager.dart';
 import 'services/app_lifecycle_reactor.dart';
 import 'services/interstitial_ad_manager.dart';
 import 'services/rewarded_ad_manager.dart';
+import 'services/gamification_service.dart';
 import 'controllers/task_controller.dart';
 
 void main() async {
@@ -42,6 +43,9 @@ Future<void> _initializeServices() async {
 
   // Initialize home widget
   await HomeWidgetService.instance.initialize();
+
+  // Initialize gamification service
+  await GamificationService.instance.init();
 
   // Initialize Mobile Ads
   await AdService.initialize();

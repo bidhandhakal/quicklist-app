@@ -4,6 +4,7 @@ import '../ui/screens/add_task_screen.dart';
 import '../ui/screens/category_screen.dart';
 import '../ui/screens/settings_screen.dart';
 import '../ui/screens/calendar_screen.dart';
+import '../ui/screens/gamification_screen.dart';
 
 class AppRoutes {
   static const String home = '/';
@@ -12,6 +13,7 @@ class AppRoutes {
   static const String category = '/category';
   static const String settings = '/settings';
   static const String calendar = '/calendar';
+  static const String gamification = '/gamification';
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
@@ -20,6 +22,7 @@ class AppRoutes {
       category: (context) => const CategoryScreen(),
       settings: (context) => const SettingsScreen(),
       calendar: (context) => const CalendarScreen(),
+      gamification: (context) => const GamificationScreen(),
     };
   }
 
