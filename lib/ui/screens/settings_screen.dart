@@ -6,7 +6,6 @@ import '../../services/rewarded_ad_manager.dart';
 import '../../controllers/task_controller.dart';
 import '../../utils/constants.dart';
 import '../widgets/widgets.dart';
-import '../widgets/banner_ad_widget.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -161,7 +160,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ],
             ),
           ),
-          const BannerAdWidget(),
         ],
       ),
     );

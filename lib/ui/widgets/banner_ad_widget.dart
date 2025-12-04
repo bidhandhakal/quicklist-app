@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../../services/ad_service.dart';
@@ -12,6 +13,10 @@ class BannerAdWidget extends StatefulWidget {
 class _BannerAdWidgetState extends State<BannerAdWidget> {
   BannerAd? _bannerAd;
   bool _isAdLoaded = false;
+  Timer? _refreshTimer;
+
+  // Refresh interval: 90 seconds (1.5 minutes)
+  static const Duration _refreshInterval = Duration(seconds: 90);
 
   @override
   void initState() {
@@ -22,13 +27,26 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
     if (AdService.isAdsSupported) {
       debugPrint('BannerAdWidget: Loading ad...');
       _loadAd();
+      _startRefreshTimer();
     } else {
       debugPrint('BannerAdWidget: Ads not supported on this platform');
     }
   }
 
+  void _startRefreshTimer() {
+    _refreshTimer = Timer.periodic(_refreshInterval, (timer) {
+      if (mounted && AdService.isAdsSupported) {
+        debugPrint('BannerAdWidget: Refreshing ad after $_refreshInterval');
+        _loadAd();
+      }
+    });
+  }
+
   void _loadAd() {
     try {
+      // Dispose old ad before loading new one
+      _bannerAd?.dispose();
+
       _bannerAd = AdService().createBannerAd(
         onAdLoaded: (ad) {
           debugPrint('BannerAd loaded successfully!');
@@ -58,6 +76,7 @@ class _BannerAdWidgetState extends State<BannerAdWidget> {
 
   @override
   void dispose() {
+    _refreshTimer?.cancel();
     _bannerAd?.dispose();
     super.dispose();
   }
