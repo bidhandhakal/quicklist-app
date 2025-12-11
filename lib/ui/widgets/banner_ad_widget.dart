@@ -7,15 +7,55 @@ import '../../services/screen_ad_manager.dart';
 ///
 /// Uses ScreenAdManager to maintain one ad per screen. The same ad instance
 /// is reused across navigation, preventing excessive impressions.
-///
-/// Usage:
-/// ```dart
-/// BannerAdWidget(screenId: 'home_screen')
-/// ```
-class BannerAdWidget extends StatelessWidget {
+/// Automatically rebuilds when ad finishes loading for instant display.
+class BannerAdWidget extends StatefulWidget {
   final String screenId;
 
   const BannerAdWidget({super.key, required this.screenId});
+
+  @override
+  State<BannerAdWidget> createState() => _BannerAdWidgetState();
+}
+
+class _BannerAdWidgetState extends State<BannerAdWidget> {
+  bool _isLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAdStatus();
+  }
+
+  void _checkAdStatus() {
+    if (!AdService.isAdsSupported) return;
+
+    // Check if ad is already loaded
+    final isLoaded = ScreenAdManager.instance.isBannerLoaded(widget.screenId);
+    if (isLoaded) {
+      setState(() => _isLoaded = true);
+    } else {
+      // Register callback to rebuild when ad loads
+      ScreenAdManager.instance.addBannerLoadCallback(
+        widget.screenId,
+        _onAdLoaded,
+      );
+    }
+  }
+
+  void _onAdLoaded() {
+    if (mounted) {
+      setState(() => _isLoaded = true);
+    }
+  }
+
+  @override
+  void dispose() {
+    ScreenAdManager.instance.removeBannerLoadCallback(
+      widget.screenId,
+      _onAdLoaded,
+    );
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,23 +63,10 @@ class BannerAdWidget extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    // Get or create ad from manager
-    final ad = ScreenAdManager.instance.getOrCreateBannerAd(screenId);
-    final isLoaded = ScreenAdManager.instance.isBannerLoaded(screenId);
+    final ad = ScreenAdManager.instance.getOrCreateBannerAd(widget.screenId);
 
-    if (ad == null) {
+    if (ad == null || !_isLoaded) {
       return const SizedBox.shrink();
-    }
-
-    // Show loading placeholder if ad is not yet loaded
-    if (!isLoaded) {
-      return Container(
-        alignment: Alignment.center,
-        width: 320,
-        height: 50,
-        child:
-            const SizedBox.shrink(), // Invisible placeholder to reserve space
-      );
     }
 
     return Container(

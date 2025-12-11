@@ -25,8 +25,52 @@ class ScreenAdManager {
   final Map<String, bool> _nativeLoadState = {};
   final Map<String, Timer> _nativeAdTimers = {};
 
+  // Callbacks for ad load notifications (for instant widget updates)
+  final Map<String, List<VoidCallback>> _bannerLoadCallbacks = {};
+  final Map<String, List<VoidCallback>> _nativeLoadCallbacks = {};
+
   // Refresh interval (60 seconds per AdMob best practices)
   static const Duration _refreshInterval = Duration(seconds: 60);
+
+  /// Add callback to be notified when banner ad loads
+  void addBannerLoadCallback(String screenId, VoidCallback callback) {
+    _bannerLoadCallbacks.putIfAbsent(screenId, () => []).add(callback);
+  }
+
+  /// Remove banner load callback
+  void removeBannerLoadCallback(String screenId, VoidCallback callback) {
+    _bannerLoadCallbacks[screenId]?.remove(callback);
+  }
+
+  /// Add callback to be notified when native ad loads
+  void addNativeLoadCallback(String screenId, VoidCallback callback) {
+    _nativeLoadCallbacks.putIfAbsent(screenId, () => []).add(callback);
+  }
+
+  /// Remove native load callback
+  void removeNativeLoadCallback(String screenId, VoidCallback callback) {
+    _nativeLoadCallbacks[screenId]?.remove(callback);
+  }
+
+  /// Notify all listeners that banner ad loaded
+  void _notifyBannerLoaded(String screenId) {
+    final callbacks = _bannerLoadCallbacks[screenId];
+    if (callbacks != null) {
+      for (final callback in List.from(callbacks)) {
+        callback();
+      }
+    }
+  }
+
+  /// Notify all listeners that native ad loaded
+  void _notifyNativeLoaded(String screenId) {
+    final callbacks = _nativeLoadCallbacks[screenId];
+    if (callbacks != null) {
+      for (final callback in List.from(callbacks)) {
+        callback();
+      }
+    }
+  }
 
   /// Preload banner ad for a screen (call during app init for instant display)
   void preloadBannerAd(String screenId) {
@@ -106,6 +150,8 @@ class ScreenAdManager {
           debugPrint('ScreenAdManager: ✅ Banner LOADED for $screenId');
           _bannerLoadState[screenId] = true;
           _bannerLoadTimes[screenId] = DateTime.now();
+          // Notify all widgets waiting for this ad
+          _notifyBannerLoaded(screenId);
         },
         onAdFailedToLoad: (ad, error) {
           debugPrint(
@@ -141,6 +187,8 @@ class ScreenAdManager {
           debugPrint('ScreenAdManager: ✅ Native ad LOADED for $screenId');
           _nativeLoadState[screenId] = true;
           _nativeLoadTimes[screenId] = DateTime.now();
+          // Notify all widgets waiting for this ad
+          _notifyNativeLoaded(screenId);
 
           // Start auto-refresh timer for this native ad
           _startNativeAdRefreshTimer(screenId);

@@ -75,7 +75,7 @@ class BannerAdController {
 
   BannerAdController(
     this.screenId, {
-    this.refreshInterval = const Duration(seconds: 90),
+    this.refreshInterval = const Duration(seconds: 60),
     this.enableAutoRefresh = true,
   });
 

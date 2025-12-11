@@ -152,6 +152,8 @@ class CategoryScreen extends StatelessWidget {
               },
             ),
           ),
+          // Banner ad at bottom
+          const BannerAdWidget(screenId: 'category'),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

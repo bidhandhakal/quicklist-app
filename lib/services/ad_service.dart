@@ -7,30 +7,25 @@ class AdService {
   factory AdService() => _instance;
   AdService._internal();
 
-  // Android Banner Ad Unit ID - Using test ad ID
+  // Android Banner Ad Unit ID - Test
   static const String _androidBannerAdUnitId =
-      'ca-app-pub-3940256099942544/6300978111'; // Google test ad ID
-  // Production: 'ca-app-pub-5567758691495974/1779261733'
+      'ca-app-pub-3940256099942544/6300978111';
 
-  // Android App Open Ad Unit ID - Using test ad ID
+  // Android App Open Ad Unit ID - Test
   static const String _androidAppOpenAdUnitId =
-      'ca-app-pub-3940256099942544/9257395921'; // Google test ad ID
-  // Production: 'ca-app-pub-5567758691495974/1370716550'
+      'ca-app-pub-3940256099942544/3419835294';
 
-  // Android Interstitial Ad Unit ID - Using test ad ID
+  // Android Interstitial Ad Unit ID - Test
   static const String _androidInterstitialAdUnitId =
-      'ca-app-pub-3940256099942544/1033173712'; // Google test ad ID
-  // Production: Add your production interstitial ad unit ID here
+      'ca-app-pub-3940256099942544/1033173712';
 
-  // Android Rewarded Ad Unit ID - Using test ad ID
+  // Android Rewarded Ad Unit ID - Test
   static const String _androidRewardedAdUnitId =
-      'ca-app-pub-3940256099942544/5224354917'; // Google test ad ID
-  // Production: Add your production rewarded ad unit ID here
+      'ca-app-pub-3940256099942544/5224354917';
 
-  // Android Native Ad Unit ID - Using test ad ID
+  // Android Native Ad Unit ID - Test
   static const String _androidNativeAdUnitId =
-      'ca-app-pub-3940256099942544/2247696110'; // Google test ad ID
-  // Production: Add your production native ad unit ID here
+      'ca-app-pub-3940256099942544/2247696110';
 
   static String get bannerAdUnitId => _androidBannerAdUnitId;
   static String get appOpenAdUnitId => _androidAppOpenAdUnitId;
