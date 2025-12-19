@@ -150,7 +150,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 InfoCard(
                   icon: Icons.info,
                   title: AppConstants.appName,
-                  subtitle: 'Version 1.0.0',
+                  subtitle: 'Version 1.1.0',
                   iconColor: Theme.of(context).primaryColor,
                 ),
 

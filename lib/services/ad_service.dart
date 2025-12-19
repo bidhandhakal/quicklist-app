@@ -13,7 +13,7 @@ class AdService {
 
   // Android App Open Ad Unit ID - Test
   static const String _androidAppOpenAdUnitId =
-      'ca-app-pub-3940256099942544/3419835294';
+      'ca-app-pub-3940256099942544/9257395921';
 
   // Android Interstitial Ad Unit ID - Test
   static const String _androidInterstitialAdUnitId =

@@ -1,7 +1,7 @@
 # Google Play Console & AdMob Policy Compliance Audit
 
 **Date:** December 8, 2025  
-**App:** QuickList (com.rima.quicklist)  
+**App:** QuickList (com.rimaoli.quicklist)  
 **Audit Type:** Play Store & AdMob Policy Violations
 
 ---
