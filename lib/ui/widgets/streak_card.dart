@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class StreakCard extends StatelessWidget {
   final int currentStreak;
@@ -12,38 +14,64 @@ class StreakCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final hasStreak = currentStreak > 0;
-    final cardColor = hasStreak ? Colors.orange.shade700 : Colors.grey;
-
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
       decoration: BoxDecoration(
-        color: cardColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: cardColor.withValues(alpha: 0.3), width: 1),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(32),
+        // No heavy border, subtle shadow
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text('🔥', style: const TextStyle(fontSize: 24)),
-          const SizedBox(height: 8),
-          Text(
-            '$currentStreak',
-            style: theme.textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: cardColor,
+          // Icon
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFF9F1C).withOpacity(0.1), // Light Orange
+              shape: BoxShape.circle,
+            ),
+            child: const Center(
+              child: FaIcon(
+                FontAwesomeIcons.fire,
+                color: Color(0xFFFF9F1C),
+                size: 24,
+              ),
             ),
           ),
-          const SizedBox(height: 4),
-          Text(
-            'Day Streak',
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: cardColor,
-              fontWeight: FontWeight.w500,
-            ),
-            textAlign: TextAlign.center,
+          const SizedBox(width: 16),
+          // Text
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '$currentStreak',
+                style: GoogleFonts.manrope(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.black87,
+                  height: 1.0,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Day Streak',
+                style: GoogleFonts.manrope(
+                  fontSize: 12,
+                  color: Colors.grey[500],
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         ],
       ),

@@ -9,3 +9,6 @@ export 'custom_loader.dart';
 export 'empty_state.dart';
 export 'priority_tag.dart';
 export 'task_tile.dart';
+export 'daily_goal_card.dart';
+export 'streak_card.dart';
+export 'stat_card.dart';

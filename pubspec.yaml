@@ -64,6 +64,9 @@ dependencies:
 
   # Ads
   google_mobile_ads: ^6.0.0
+  google_fonts: ^6.3.3
+  flutter_staggered_animations: ^1.1.1
+  font_awesome_flutter: ^10.12.0
 
 dev_dependencies:
   flutter_test:

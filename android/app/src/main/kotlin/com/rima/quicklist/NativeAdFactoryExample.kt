@@ -1,4 +1,4 @@
-package com.rimaoli.quicklist
+package com.rimaoli.quicklist.dev
 
 import android.view.LayoutInflater
 import android.widget.Button

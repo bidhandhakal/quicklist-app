@@ -1,77 +1,80 @@
 import 'package:flutter/material.dart';
 
 class EmptyState extends StatelessWidget {
-  final IconData icon;
   final String title;
   final String message;
-  final Widget? action;
+  final IconData? icon;
+  final Widget? action; // Support for custom action widget (e.g. Button)
+  // Keeping these for backward compatibility if needed, but 'action' is what user uses now
+  final String? buttonText; 
+  final VoidCallback? onButtonPressed;
 
   const EmptyState({
     super.key,
-    required this.icon,
-    required this.title,
-    required this.message,
+    this.title = 'All Caught Up! 🎉',
+    this.message = 'You have no tasks for today. Enjoy your free time!',
+    this.icon,
     this.action,
+    this.buttonText,
+    this.onButtonPressed,
   });
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(32.0),
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Animated Icon
-            TweenAnimationBuilder<double>(
-              tween: Tween(begin: 0.0, end: 1.0),
-              duration: const Duration(milliseconds: 600),
-              builder: (context, value, child) {
-                return Transform.scale(
-                  scale: value,
-                  child: Opacity(
-                    opacity: value,
-                    child: Container(
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primaryContainer.withValues(alpha: 0.3),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        icon,
-                        size: 80,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ),
-                  ),
-                );
-              },
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF2F2F7), // iOS light grey
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                icon ?? Icons.check_circle_outline_rounded,
+                size: 48,
+                color: Colors.grey.shade400,
+              ),
             ),
-            const SizedBox(height: 32),
-
-            // Title
+            const SizedBox(height: 24),
             Text(
               title,
-              style: Theme.of(
-                context,
-              ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: Colors.black87,
+                fontFamily: 'SF Pro Display',
+              ),
             ),
-            const SizedBox(height: 12),
-
-            // Message
+            const SizedBox(height: 8),
             Text(
               message,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
               textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 15,
+                color: Colors.grey.shade500,
+                height: 1.4,
+              ),
             ),
-
-            // Action button
-            if (action != null) ...[const SizedBox(height: 32), action!],
+            const SizedBox(height: 24),
+            if (action != null)
+              action!
+            else if (buttonText != null)
+              TextButton(
+                onPressed: onButtonPressed,
+                style: TextButton.styleFrom(
+                  foregroundColor: const Color(0xFF007AFF),
+                  textStyle: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                child: Text(buttonText!),
+              ),
           ],
         ),
       ),

@@ -1,4 +1,4 @@
-package com.rimaoli.quicklist
+package com.rimaoli.quicklist.dev
 
 import android.view.LayoutInflater
 import io.flutter.embedding.android.FlutterActivity

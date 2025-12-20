@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/task_controller.dart';
 import '../../config/routes.dart';
-import '../../utils/constants.dart';
 import '../../services/gamification_service.dart';
 import '../widgets/task_tile.dart';
-import '../widgets/empty_state.dart';
 import '../widgets/daily_goal_card.dart';
 import '../widgets/streak_card.dart';
+import '../widgets/stat_card.dart';
 import '../widgets/native_ad_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,14 +21,11 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final TextEditingController _searchController = TextEditingController();
-  bool _isSearching = false;
-
+  
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    // Load tasks when screen initializes
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<TaskController>().loadTasks();
     });
@@ -36,263 +34,269 @@ class _HomeScreenState extends State<HomeScreen>
   @override
   void dispose() {
     _tabController.dispose();
-    _searchController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
-      body: Consumer<TaskController>(
-        builder: (context, taskController, child) {
-          return Column(
-            children: [
-              // Stats cards
-              _buildStatsCards(taskController),
+      backgroundColor: const Color(0xFFF6F8FB), // Light greyish blue match
+      body: SafeArea(
+        child: Consumer<TaskController>(
+          builder: (context, taskController, child) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Custom Header
+                  _buildHeader(),
+                  const SizedBox(height: 28),
 
-              // Tabs
-              Material(
-                elevation: 2,
-                color: Theme.of(context).colorScheme.surface,
-                child: TabBar(
-                  controller: _tabController,
-                  labelColor: Theme.of(context).colorScheme.primary,
-                  unselectedLabelColor: Theme.of(
-                    context,
-                  ).colorScheme.onSurfaceVariant,
-                  indicatorColor: Theme.of(context).colorScheme.primary,
-                  indicatorWeight: 3,
-                  tabs: const [
-                    Tab(text: 'All'),
-                    Tab(text: 'Active'),
-                    Tab(text: 'Completed'),
-                  ],
-                ),
-              ),
+                  // Dashboard (2 Column Layout)
+                  _buildDashboard(taskController),
+                  const SizedBox(height: 32),
 
-              // Task list
-              Expanded(
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    _buildTaskList(taskController, showAll: true),
-                    _buildTaskList(taskController, showActive: true),
-                    _buildTaskList(taskController, showCompleted: true),
-                  ],
-                ),
+                  // Tasks Header & Tabs
+                  Text(
+                    'Tasks',
+                    style: GoogleFonts.manrope(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildTabs(context),
+                  const SizedBox(height: 20),
+
+                  // Task List
+                  _buildSyncedTaskList(taskController),
+                ],
               ),
-            ],
-          );
-        },
+            );
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final controller = context.read<TaskController>();
           await Navigator.pushNamed(context, AppRoutes.addTask);
-          // Refresh tasks after returning from add screen
           if (mounted) {
             controller.loadTasks();
           }
         },
-        tooltip: 'Add Task',
-        child: const Icon(Icons.add),
+        backgroundColor: const Color(0xFF007AFF),
+        elevation: 4,
+        child: const Icon(Icons.add_rounded, color: Colors.white, size: 28),
       ),
       bottomNavigationBar: _buildBottomNavigationBar(),
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
-    return AppBar(
-      automaticallyImplyLeading: false,
-      title: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 300),
-        transitionBuilder: (child, animation) {
-          return FadeTransition(
-            opacity: animation,
-            child: SlideTransition(
-              position: Tween<Offset>(
-                begin: const Offset(0, -0.2),
-                end: Offset.zero,
-              ).animate(animation),
-              child: child,
-            ),
-          );
-        },
-        child: _isSearching
-            ? TextField(
-                key: const ValueKey('search'),
-                controller: _searchController,
-                autofocus: true,
-                decoration: const InputDecoration(
-                  hintText: 'Search tasks...',
-                  border: InputBorder.none,
+  Widget _buildHeader() {
+    final now = DateTime.now();
+    final dateString = DateFormat('EEEE, MMMM d').format(now).toUpperCase();
+
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                dateString,
+                style: GoogleFonts.manrope(
+                  color: Colors.grey[500],
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.8,
                 ),
-                onChanged: (value) {
-                  context.read<TaskController>().setSearchQuery(value);
-                },
-              )
-            : const Text(AppConstants.appName, key: ValueKey('title')),
-      ),
-      actions: [
-        IconButton(
-          icon: Icon(_isSearching ? Icons.close : Icons.search),
-          onPressed: () {
-            setState(() {
-              _isSearching = !_isSearching;
-              if (!_isSearching) {
-                _searchController.clear();
-                context.read<TaskController>().setSearchQuery('');
-              }
-            });
-          },
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Today',
+                style: GoogleFonts.manrope(
+                  color: Colors.black87,
+                  fontSize: 36,
+                  fontWeight: FontWeight.w800,
+                  height: 1.1,
+                ),
+              ),
+            ],
+          ),
         ),
-        PopupMenuButton(
-          itemBuilder: (context) => [
-            const PopupMenuItem(
-              value: 'filter',
-              child: Row(
-                children: [
-                  Icon(Icons.filter_list),
-                  SizedBox(width: 8),
-                  Text('Filter'),
-                ],
-              ),
-            ),
-            const PopupMenuItem(
-              value: 'settings',
-              child: Row(
-                children: [
-                  Icon(Icons.settings),
-                  SizedBox(width: 8),
-                  Text('Settings'),
-                ],
-              ),
-            ),
-          ],
-          onSelected: (value) {
-            if (value == 'filter') {
-              _showFilterBottomSheet();
-            } else if (value == 'settings') {
+        // Search Button
+        Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white,
+            border: Border.all(color: Colors.grey.withOpacity(0.1)),
+          ),
+          child: IconButton(
+            icon: const Icon(Icons.search_rounded, color: Colors.black87, size: 22),
+            onPressed: () {
+              // Search action
+            },
+          ),
+        ),
+        const SizedBox(width: 12),
+        // Settings Button
+        Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white,
+            border: Border.all(color: Colors.grey.withOpacity(0.1)),
+          ),
+          child: IconButton(
+            icon: const Icon(Icons.settings_outlined, color: Colors.black87, size: 22),
+            onPressed: () {
               Navigator.pushNamed(context, AppRoutes.settings);
-            }
-          },
+            },
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildStatsCards(TaskController taskController) {
+  Widget _buildDashboard(TaskController taskController) {
     final gamificationService = GamificationService.instance;
+    // Fixed heights for perfect alignment
+    const double subCardHeight = 120; // Reduced height for compactness
+    const double gap = 16;
+    const double mainCardHeight = (subCardHeight * 2) + gap;
 
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 20, 16, 12),
-      child: Column(
+    return SizedBox(
+      height: mainCardHeight,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Daily Goal and Streak Row
-          ListenableBuilder(
-            listenable: gamificationService,
-            builder: (context, _) {
-              return Row(
-                children: [
-                  Expanded(
-                    child: DailyGoalCard(
-                      targetTasks: gamificationService.dailyGoal.targetTasks,
-                      completedTasks:
-                          gamificationService.dailyGoal.todayCompleted,
-                      onTap: () =>
-                          Navigator.pushNamed(context, AppRoutes.gamification),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: InkWell(
-                      onTap: () =>
-                          Navigator.pushNamed(context, AppRoutes.gamification),
-                      child: StreakCard(
-                        currentStreak: gamificationService.streak.currentStreak,
-                        longestStreak: gamificationService.streak.longestStreak,
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
+          // Left: Daily Goal
+          Expanded(
+            flex: 5, // Slightly larger proportional width if needed, or equal
+            child: ListenableBuilder(
+              listenable: gamificationService,
+              builder: (context, _) {
+                return DailyGoalCard(
+                  targetTasks: gamificationService.dailyGoal.targetTasks,
+                  completedTasks: gamificationService.dailyGoal.todayCompleted,
+                  onTap: () => Navigator.pushNamed(context, AppRoutes.gamification),
+                );
+              },
+            ),
           ),
-          const SizedBox(height: 16),
-
-          // Stats Row
-          Row(
-            children: [
-              Expanded(
-                child: _buildStatCard(
-                  icon: Icons.checklist_rounded,
-                  label: 'Total',
-                  count: taskController.totalTasks,
-                  color: AppColors.primary,
+          const SizedBox(width: 16),
+          // Right: Stats Column
+          Expanded(
+            flex: 6,
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListenableBuilder(
+                    listenable: gamificationService,
+                    builder: (context, _) {
+                      return GestureDetector(
+                        onTap: () => Navigator.pushNamed(context, AppRoutes.gamification),
+                        child: StreakCard(
+                           currentStreak: gamificationService.streak.currentStreak,
+                           longestStreak: gamificationService.streak.longestStreak,
+                        ),
+                      );
+                    },
+                  ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildStatCard(
-                  icon: Icons.pending_actions_rounded,
-                  label: 'Active',
-                  count: taskController.incompleteTasksCount,
-                  color: AppColors.mediumPriority,
+                const SizedBox(height: 16),
+                Expanded(
+                  child: StatCard(
+                    title: 'To Do',
+                    currentValue: taskController.incompleteTasksCount.toString(),
+                    unit: '',
+                    icon: Icons.calendar_today_rounded,
+                    iconColor: const Color(0xFF6C63FF),
+                    onTap: () => _tabController.animateTo(0),
+                    trailing: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                            _buildDot(Colors.redAccent),
+                            const SizedBox(height: 4),
+                            _buildDot(Colors.blueAccent),
+                            const SizedBox(height: 4),
+                            _buildDot(Colors.greenAccent),
+                        ],
+                    ),
+                  ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildStatCard(
-                  icon: Icons.warning_rounded,
-                  label: 'Overdue',
-                  count: taskController.overdueTasksCount,
-                  color: AppColors.highPriority,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
     );
   }
+  
+  Widget _buildDot(Color color) {
+      return Container(
+          width: 6,
+          height: 6,
+          decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+          ),
+      );
+  }
 
-  Widget _buildStatCard({
-    required IconData icon,
-    required String label,
-    required int count,
-    required Color color,
-  }) {
+  Widget _buildTabs(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      height: 44,
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(12),
       ),
-      child: Column(
-        children: [
-          Icon(icon, color: color, size: 24),
-          const SizedBox(height: 8),
-          Text(
-            count.toString(),
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              color: color,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
+      padding: const EdgeInsets.all(4),
+      child: TabBar(
+        controller: _tabController,
+        indicator: BoxDecoration(
+           color: Colors.white,
+           borderRadius: BorderRadius.circular(10),
+           boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 2,
+                  offset: const Offset(0, 1),
+              )
+           ],
+        ),
+        indicatorSize: TabBarIndicatorSize.tab,
+        dividerColor: Colors.transparent,
+        labelColor: Colors.black87,
+        unselectedLabelColor: Colors.grey[600],
+        labelStyle: GoogleFonts.manrope(fontWeight: FontWeight.bold, fontSize: 13),
+        unselectedLabelStyle: GoogleFonts.manrope(fontWeight: FontWeight.w600, fontSize: 13),
+        tabs: const [
+          Tab(text: 'Today'),
+          Tab(text: 'Done'),
+          Tab(text: 'All'),
         ],
       ),
     );
+  }
+
+  Widget _buildSyncedTaskList(TaskController taskController) {
+      return AnimatedBuilder(
+          animation: _tabController,
+          builder: (context, child) {
+              int index = _tabController.index;
+              bool active = index == 0;
+              bool completed = index == 1;
+              bool all = index == 2;
+              
+              return _buildTaskList(taskController, showActive: active, showCompleted: completed, showAll: all);
+          },
+      );
   }
 
   Widget _buildTaskList(
@@ -312,169 +316,109 @@ class _HomeScreenState extends State<HomeScreen>
     }
 
     if (tasks.isEmpty) {
-      String message;
-      String title;
-      IconData icon;
-
-      if (showCompleted) {
-        icon = Icons.task_alt_rounded;
-        title = 'No completed tasks yet';
-        message = '🎯 Complete tasks to build your streak!';
-      } else if (showActive) {
-        icon = Icons.celebration_rounded;
-        title = 'All caught up!';
-        message = '✨ You\'ve completed all your tasks. Great job!';
-      } else {
-        icon = Icons.inbox_rounded;
-        title = AppConstants.noTasksMessage;
-        message = '💡 ${AppConstants.addTaskMessage}';
-      }
-
-      return EmptyState(icon: icon, title: title, message: message);
+       return Padding(
+         padding: const EdgeInsets.only(top: 40),
+         child: Center(
+            child: Column(
+                children: [
+                    Icon(Icons.task_outlined, size: 48, color: Colors.grey[300]),
+                    const SizedBox(height: 16),
+                    Text("No tasks found", style: GoogleFonts.manrope(color: Colors.grey[400])),
+                ],
+            )
+        ),
+       );
     }
 
-    // Insert native ads every 6 tasks
     final itemsWithAds = <dynamic>[];
     for (int i = 0; i < tasks.length; i++) {
       itemsWithAds.add(tasks[i]);
-      // Add native ad after every 6 tasks
       if ((i + 1) % 6 == 0 && i != tasks.length - 1) {
-        itemsWithAds.add('ad_$i'); // Placeholder for ad
+        itemsWithAds.add('ad_$i');
       }
     }
 
-    return RefreshIndicator(
-      onRefresh: () async {
-        await taskController.loadTasks();
-      },
-      child: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(0, 8, 0, 80),
+    return ListView.separated(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
         itemCount: itemsWithAds.length,
+        separatorBuilder: (context, index) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
           final item = itemsWithAds[index];
-
-          // Show ad
           if (item is String && item.startsWith('ad_')) {
             return NativeAdWidget(screenId: 'home_list_$item');
           }
-
-          // Show task
           final task = item;
-          return TaskTile(
-            task: task,
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                AppRoutes.editTask,
-                arguments: task.id,
-              );
-            },
+          // Apply custom cleaner styling for tasks if possible, but for now we reuse TaskTile
+          // Consider modifying TaskTile if it doesn't match the "clean" look.
+          return Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                    BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 8, offset: const Offset(0, 2))
+                ]
+            ),
+            child: TaskTile(
+              task: task,
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.editTask,
+                  arguments: task.id,
+                );
+              },
+            ),
           );
         },
-      ),
     );
   }
 
   Widget _buildBottomNavigationBar() {
-    return BottomNavigationBar(
-      currentIndex: 0,
-      onTap: (index) {
-        if (index == 0) {
-          // Already on home - scroll to top if tapped again
-          return;
-        }
-        switch (index) {
-          case 1:
-            Navigator.pushNamed(context, AppRoutes.category);
-            break;
-          case 2:
-            Navigator.pushNamed(context, AppRoutes.gamification);
-            break;
-        }
-      },
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'Home'),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.category_rounded),
-          label: 'Categories',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.emoji_events_rounded),
-          label: 'Achievements',
-        ),
-      ],
-    );
-  }
-
-  void _showFilterBottomSheet() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Consumer<TaskController>(
-          builder: (context, taskController, child) {
-            return SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Filter Tasks',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Priority filter
-                    Text(
-                      'Priority',
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    const SizedBox(height: 8),
-                    Wrap(
-                      spacing: 8,
-                      children: [
-                        FilterChip(
-                          label: const Text('All'),
-                          selected:
-                              taskController.selectedPriorityFilter == null,
-                          onSelected: (_) {
-                            taskController.setPriorityFilter(null);
-                          },
-                        ),
-                        ...TaskPriority.values.map((priority) {
-                          return FilterChip(
-                            label: Text(priority.displayName),
-                            selected:
-                                taskController.selectedPriorityFilter ==
-                                priority.index,
-                            onSelected: (_) {
-                              taskController.setPriorityFilter(priority.index);
-                            },
-                          );
-                        }),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-
-                    // Clear filters button
-                    SizedBox(
-                      width: double.infinity,
-                      child: FilledButton(
-                        onPressed: () {
-                          taskController.clearFilters();
-                          Navigator.pop(context);
-                        },
-                        child: const Text('Clear Filters'),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
+    return Container(
+      decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(0.03),
+                  blurRadius: 20,
+                  offset: const Offset(0, -5),
+              )
+          ]
+      ),
+      child: BottomNavigationBar(
+        currentIndex: 0,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        selectedItemColor: const Color(0xFF007AFF),
+        unselectedItemColor: Colors.grey[400],
+        selectedLabelStyle: GoogleFonts.manrope(fontWeight: FontWeight.w700, fontSize: 12),
+        unselectedLabelStyle: GoogleFonts.manrope(fontWeight: FontWeight.w500, fontSize: 12),
+        type: BottomNavigationBarType.fixed,
+        onTap: (index) {
+          if (index == 0) return;
+          switch (index) {
+            case 1:
+              Navigator.pushNamed(context, AppRoutes.category);
+              break;
+            case 2:
+              Navigator.pushNamed(context, AppRoutes.gamification);
+              break;
+          }
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'Home'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.folder_outlined),
+            label: 'Category',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.emoji_events_outlined),
+            label: 'Achievements',
+          ),
+        ],
+      ),
     );
   }
 }
+
