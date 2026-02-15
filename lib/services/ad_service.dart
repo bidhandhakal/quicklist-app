@@ -7,25 +7,25 @@ class AdService {
   factory AdService() => _instance;
   AdService._internal();
 
-    // Android Banner Ad Unit ID - Real
-    static const String _androidBannerAdUnitId =
-      'ca-app-pub-5567758691495974/2557350305';
+  // Android Banner Ad Unit ID - Test
+  static const String _androidBannerAdUnitId =
+      'ca-app-pub-3940256099942544/6300978111';
 
-    // Android App Open Ad Unit ID - Real
-    static const String _androidAppOpenAdUnitId =
-      'ca-app-pub-5567758691495974/4991941957';
+  // Android App Open Ad Unit ID - Test
+  static const String _androidAppOpenAdUnitId =
+      'ca-app-pub-3940256099942544/9257395921';
 
-    // Android Interstitial Ad Unit ID - Real
-    static const String _androidInterstitialAdUnitId =
-      'ca-app-pub-5567758691495974/4974919642';
+  // Android Interstitial Ad Unit ID - Test
+  static const String _androidInterstitialAdUnitId =
+      'ca-app-pub-3940256099942544/1033173712';
 
-    // Android Rewarded Ad Unit ID - Real
-    static const String _androidRewardedAdUnitId =
-      'ca-app-pub-5567758691495974/1342796390';
+  // Android Rewarded Ad Unit ID - Test
+  static const String _androidRewardedAdUnitId =
+      'ca-app-pub-3940256099942544/5224354917';
 
-    // Android Native Ad Unit ID - Real
-    static const String _androidNativeAdUnitId =
-      'ca-app-pub-5567758691495974/2063785466';
+  // Android Native Ad Unit ID - Test
+  static const String _androidNativeAdUnitId =
+      'ca-app-pub-3940256099942544/2247696110';
 
   static String get bannerAdUnitId => _androidBannerAdUnitId;
   static String get appOpenAdUnitId => _androidAppOpenAdUnitId;
