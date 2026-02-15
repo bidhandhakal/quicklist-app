@@ -44,7 +44,7 @@
             android:value="2" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-5567758691495974~9429686890"/>
+            android:value="ca-app-pub-3940256099942544~3347511713"/>
         
         <!-- UMP SDK: Delay app measurement until user consent -->
         <meta-data
