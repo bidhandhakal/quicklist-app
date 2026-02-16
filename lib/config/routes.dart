@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import '../ui/screens/home_screen.dart';
+import '../ui/screens/main_shell.dart';
 import '../ui/screens/add_task_screen.dart';
-import '../ui/screens/category_screen.dart';
 import '../ui/screens/settings_screen.dart';
 import '../ui/screens/calendar_screen.dart';
-import '../ui/screens/gamification_screen.dart';
 
 class AppRoutes {
   static const String home = '/';
@@ -17,12 +15,12 @@ class AppRoutes {
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
-      home: (context) => const HomeScreen(),
+      home: (context) => const MainShell(initialIndex: 0),
       addTask: (context) => const AddTaskScreen(),
-      category: (context) => const CategoryScreen(),
+      category: (context) => const MainShell(initialIndex: 1),
       settings: (context) => const SettingsScreen(),
       calendar: (context) => const CalendarScreen(),
-      gamification: (context) => const GamificationScreen(),
+      gamification: (context) => const MainShell(initialIndex: 2),
     };
   }
 

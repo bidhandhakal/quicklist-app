@@ -9,7 +9,6 @@ import '../widgets/task_tile.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/native_ad_widget.dart';
 import '../widgets/banner_ad_widget.dart';
-import '../widgets/custom_bottom_nav_bar.dart';
 
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({super.key});
@@ -24,11 +23,7 @@ class CategoryScreen extends StatelessWidget {
           systemNavigationBarColor: Colors.transparent,
           systemNavigationBarIconBrightness: Brightness.dark,
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () =>
-              Navigator.of(context).pushReplacementNamed(AppRoutes.home),
-        ),
+        automaticallyImplyLeading: false,
         title: const Text('Categories'),
       ),
       body: Column(
@@ -173,7 +168,6 @@ class CategoryScreen extends StatelessWidget {
           const BannerAdWidget(screenId: 'category'),
         ],
       ),
-      bottomNavigationBar: const CustomBottomNavBar(currentIndex: 1),
     );
   }
 }

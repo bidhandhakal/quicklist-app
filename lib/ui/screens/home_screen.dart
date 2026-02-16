@@ -12,7 +12,6 @@ import '../widgets/daily_goal_card.dart';
 import '../widgets/streak_card.dart';
 import '../widgets/stat_card.dart';
 import '../widgets/native_ad_widget.dart';
-import '../widgets/custom_bottom_nav_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -94,23 +93,6 @@ class _HomeScreenState extends State<HomeScreen>
             },
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            final controller = context.read<TaskController>();
-            await Navigator.pushNamed(context, AppRoutes.addTask);
-            if (mounted) {
-              controller.loadTasks();
-            }
-          },
-          backgroundColor: const Color(0xFF007AFF),
-          elevation: 4,
-          child: Icon(
-            Icons.add_rounded,
-            color: Colors.white,
-            size: context.rw(24),
-          ),
-        ),
-        bottomNavigationBar: const CustomBottomNavBar(currentIndex: 0),
       ),
     );
   }

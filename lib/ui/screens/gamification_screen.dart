@@ -4,12 +4,10 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../../services/gamification_service.dart';
 import '../../services/ad_service.dart';
 import '../../services/interstitial_ad_manager.dart';
-import '../../config/routes.dart';
 import '../../models/achievement_model.dart';
 import '../../utils/size_config.dart';
 import '../widgets/achievement_card.dart';
 import '../widgets/native_ad_widget.dart';
-import '../widgets/custom_bottom_nav_bar.dart';
 
 class GamificationScreen extends StatefulWidget {
   const GamificationScreen({super.key});
@@ -88,11 +86,7 @@ class _GamificationScreenState extends State<GamificationScreen>
             Tab(text: 'Statistics'),
           ],
         ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () =>
-              Navigator.of(context).pushReplacementNamed(AppRoutes.home),
-        ),
+        automaticallyImplyLeading: false,
       ),
       body: ListenableBuilder(
         listenable: gamificationService,
@@ -107,19 +101,14 @@ class _GamificationScreenState extends State<GamificationScreen>
           );
         },
       ),
-      bottomNavigationBar: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (_isBannerAdLoaded && _bannerAd != null)
-            Container(
+      bottomNavigationBar: (_isBannerAdLoaded && _bannerAd != null)
+          ? Container(
               alignment: Alignment.center,
               width: _bannerAd!.size.width.toDouble(),
               height: _bannerAd!.size.height.toDouble(),
               child: AdWidget(ad: _bannerAd!),
-            ),
-          const CustomBottomNavBar(currentIndex: 2),
-        ],
-      ),
+            )
+          : null,
     );
   }
 
