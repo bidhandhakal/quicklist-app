@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../config/routes.dart'; // import already exists, just ensuring order or adding if missing? Wait, routes is on line 5.
+import '../../config/routes.dart';
 import '../../controllers/task_controller.dart';
 import '../../data/dummy_categories.dart';
 import 'package:provider/provider.dart';
+import '../../utils/size_config.dart';
 import '../widgets/task_tile.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/native_ad_widget.dart';
@@ -36,16 +37,16 @@ class CategoryScreen extends StatelessWidget {
             child: Consumer<TaskController>(
               builder: (context, taskController, child) {
                 return ListView.builder(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  padding: EdgeInsets.symmetric(vertical: context.rh(8)),
                   itemCount:
                       DummyCategories.categories.length + 1, // +1 for native ad
                   itemBuilder: (context, index) {
                     // Show native ad after 3rd category
                     if (index == 3) {
-                      return const Padding(
+                      return Padding(
                         padding: EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
+                          horizontal: context.rw(16),
+                          vertical: context.rh(8),
                         ),
                         child: NativeAdWidget(
                           screenId: 'category_screen_category_list',
@@ -65,9 +66,9 @@ class CategoryScreen extends StatelessWidget {
                         .length;
 
                     return Card(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 6,
+                      margin: EdgeInsets.symmetric(
+                        horizontal: context.rw(16),
+                        vertical: context.rh(6),
                       ),
                       child: InkWell(
                         onTap: () {
@@ -79,26 +80,27 @@ class CategoryScreen extends StatelessWidget {
                             ),
                           );
                         },
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(context.rw(16)),
                         child: Padding(
-                          padding: const EdgeInsets.all(16),
+                          padding: EdgeInsets.all(context.rw(14)),
                           child: Row(
                             children: [
                               // Category icon
                               Container(
-                                padding: const EdgeInsets.all(12),
+                                padding: EdgeInsets.all(context.rw(10)),
                                 decoration: BoxDecoration(
                                   color: category.color.withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(
+                                    context.rw(10),
+                                  ),
                                 ),
                                 child: Icon(
                                   category.icon,
                                   color: category.color,
-                                  size: 28,
+                                  size: context.rw(22),
                                 ),
                               ),
-                              const SizedBox(width: 16),
-
+                              SizedBox(width: context.rw(12)),
                               // Category info
                               Expanded(
                                 child: Column(
@@ -139,9 +141,9 @@ class CategoryScreen extends StatelessWidget {
                                             fontWeight: FontWeight.w600,
                                           ),
                                     ),
-                                    const SizedBox(height: 4),
+                                    SizedBox(height: context.rh(4)),
                                     SizedBox(
-                                      width: 60,
+                                      width: context.rw(50),
                                       child: LinearProgressIndicator(
                                         value: completedCount / taskCount,
                                         backgroundColor: category.color
@@ -155,7 +157,7 @@ class CategoryScreen extends StatelessWidget {
                                   ],
                                 ),
 
-                              const SizedBox(width: 8),
+                              SizedBox(width: context.rw(8)),
                               const Icon(Icons.chevron_right),
                             ],
                           ),
@@ -183,13 +185,14 @@ class CategoryDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
     return Scaffold(
       appBar: AppBar(
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(category.icon, color: category.color),
-            const SizedBox(width: 8),
+            SizedBox(width: context.rw(8)),
             Text(category.name),
           ],
         ),
@@ -223,15 +226,15 @@ class CategoryDetailScreen extends StatelessWidget {
                 }
 
                 return ListView.builder(
-                  padding: const EdgeInsets.only(bottom: 80),
+                  padding: EdgeInsets.only(bottom: context.rh(80)),
                   itemCount: tasks.length + 1, // +1 for native ad
                   itemBuilder: (context, index) {
                     // Show native ad after 4th task
                     if (index == 4 && tasks.length > 4) {
-                      return const Padding(
+                      return Padding(
                         padding: EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
+                          horizontal: context.rw(16),
+                          vertical: context.rh(8),
                         ),
                         child: NativeAdWidget(
                           screenId: 'category_screen_task_list',

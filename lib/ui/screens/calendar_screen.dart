@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../controllers/task_controller.dart';
 import '../../config/routes.dart';
+import '../../utils/size_config.dart';
 import '../widgets/task_tile.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/banner_ad_widget.dart';
@@ -28,6 +29,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
     return Scaffold(
       appBar: AppBar(
         systemOverlayStyle: const SystemUiOverlayStyle(
@@ -58,7 +60,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   children: [
                     // Calendar widget
                     Card(
-                      margin: const EdgeInsets.all(16),
+                      margin: EdgeInsets.all(context.rw(16)),
                       child: TableCalendar(
                         firstDay: DateTime.utc(2020, 1, 1),
                         lastDay: DateTime.utc(2030, 12, 31),
@@ -110,7 +112,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             border: Border.all(
                               color: Theme.of(context).colorScheme.outline,
                             ),
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(context.rw(8)),
                           ),
                         ),
                       ),
@@ -118,7 +120,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
                     // Tasks for selected day
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: EdgeInsets.symmetric(horizontal: context.rw(16)),
                       child: Row(
                         children: [
                           Text(
@@ -142,7 +144,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: context.rh(8)),
 
                     // Task list for selected day
                     Expanded(child: _buildTaskList(taskController)),
@@ -216,7 +218,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: EdgeInsets.only(bottom: context.rh(16)),
       itemCount: tasks.length,
       itemBuilder: (context, index) {
         return TaskTile(

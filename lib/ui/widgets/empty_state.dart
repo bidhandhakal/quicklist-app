@@ -6,7 +6,7 @@ class EmptyState extends StatelessWidget {
   final IconData? icon;
   final Widget? action; // Support for custom action widget (e.g. Button)
   // Keeping these for backward compatibility if needed, but 'action' is what user uses now
-  final String? buttonText; 
+  final String? buttonText;
   final VoidCallback? onButtonPressed;
 
   const EmptyState({
@@ -23,44 +23,44 @@ class EmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 40),
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 32),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
                 color: const Color(0xFFF2F2F7), // iOS light grey
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 icon ?? Icons.check_circle_outline_rounded,
-                size: 48,
+                size: 40,
                 color: Colors.grey.shade400,
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             Text(
               title,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: FontWeight.w700,
                 color: Colors.black87,
                 fontFamily: 'SF Pro Display',
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Text(
               message,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 15,
+                fontSize: 14,
                 color: Colors.grey.shade500,
                 height: 1.4,
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             if (action != null)
               action!
             else if (buttonText != null)

@@ -84,19 +84,19 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
                     );
                   },
                   onLongPress: () => _showCategoryOptions(category),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(12),
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(14),
                     child: Row(
                       children: [
                         // Category icon
                         Container(
-                          padding: const EdgeInsets.all(12),
+                          padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             color: Color(
                               category.colorValue,
                             ).withValues(alpha: 0.1),
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(10),
                           ),
                           child: Icon(
                             IconData(
@@ -104,10 +104,10 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
                               fontFamily: 'MaterialIcons',
                             ),
                             color: Color(category.colorValue),
-                            size: 28,
+                            size: 22,
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: 12),
 
                         // Category info
                         Expanded(
@@ -152,7 +152,7 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
                               ),
                               const SizedBox(height: 4),
                               SizedBox(
-                                width: 60,
+                                width: 50,
                                 child: LinearProgressIndicator(
                                   value: completedCount / taskCount,
                                   backgroundColor: Color(

@@ -43,15 +43,15 @@ class AchievementCard extends StatelessWidget {
               : null,
         ),
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(12.0),
           child: Column(
             children: [
               Row(
                 children: [
                   // Icon
                   Container(
-                    width: 56,
-                    height: 56,
+                    width: 44,
+                    height: 44,
                     decoration: BoxDecoration(
                       color: isUnlocked
                           ? theme.colorScheme.primary.withValues(alpha: 0.2)
@@ -70,13 +70,13 @@ class AchievementCard extends StatelessWidget {
                       child: Text(
                         achievement.icon,
                         style: TextStyle(
-                          fontSize: 28,
+                          fontSize: 22,
                           color: isUnlocked ? null : Colors.grey.shade400,
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 12),
 
                   // Text content
                   Expanded(

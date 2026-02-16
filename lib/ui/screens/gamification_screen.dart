@@ -6,6 +6,7 @@ import '../../services/ad_service.dart';
 import '../../services/interstitial_ad_manager.dart';
 import '../../config/routes.dart';
 import '../../models/achievement_model.dart';
+import '../../utils/size_config.dart';
 import '../widgets/achievement_card.dart';
 import '../widgets/native_ad_widget.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
@@ -66,6 +67,7 @@ class _GamificationScreenState extends State<GamificationScreen>
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
     final theme = Theme.of(context);
     final gamificationService = GamificationService.instance;
 
@@ -88,7 +90,8 @@ class _GamificationScreenState extends State<GamificationScreen>
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () => Navigator.of(context).pushReplacementNamed(AppRoutes.home),
+          onPressed: () =>
+              Navigator.of(context).pushReplacementNamed(AppRoutes.home),
         ),
       ),
       body: ListenableBuilder(
@@ -127,20 +130,20 @@ class _GamificationScreenState extends State<GamificationScreen>
     final totalCount = service.achievements.length;
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(context.rw(16)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Daily Goal Card
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(context.rw(14)),
             decoration: BoxDecoration(
               color:
                   (dailyGoal.isTodayGoalAchieved
                           ? Colors.amber
                           : theme.colorScheme.primary)
                       .withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(context.rw(10)),
               border: Border.all(
                 color:
                     (dailyGoal.isTodayGoalAchieved
@@ -162,9 +165,9 @@ class _GamificationScreenState extends State<GamificationScreen>
                       color: dailyGoal.isTodayGoalAchieved
                           ? Colors.amber
                           : theme.colorScheme.primary,
-                      size: 28,
+                      size: context.rw(22),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: context.rw(10)),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -199,12 +202,12 @@ class _GamificationScreenState extends State<GamificationScreen>
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: context.rh(12)),
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(context.rw(8)),
                   child: LinearProgressIndicator(
                     value: dailyGoal.todayProgress,
-                    minHeight: 8,
+                    minHeight: context.rh(8),
                     backgroundColor: theme.colorScheme.surfaceContainerHighest,
                     valueColor: AlwaysStoppedAnimation<Color>(
                       dailyGoal.isTodayGoalAchieved
@@ -216,18 +219,18 @@ class _GamificationScreenState extends State<GamificationScreen>
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: context.rh(12)),
 
           // Streak Card
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(context.rw(14)),
             decoration: BoxDecoration(
               color:
                   (streak.currentStreak > 0
                           ? Colors.orange.shade700
                           : Colors.grey)
                       .withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(context.rw(10)),
               border: Border.all(
                 color:
                     (streak.currentStreak > 0
@@ -239,8 +242,8 @@ class _GamificationScreenState extends State<GamificationScreen>
             ),
             child: Row(
               children: [
-                const Text('🔥', style: TextStyle(fontSize: 32)),
-                const SizedBox(width: 12),
+                Text('🔥', style: TextStyle(fontSize: context.rf(26))),
+                SizedBox(width: context.rw(10)),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -251,7 +254,7 @@ class _GamificationScreenState extends State<GamificationScreen>
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      SizedBox(height: context.rh(4)),
                       Text(
                         '${streak.currentStreak} ${streak.currentStreak == 1 ? 'day' : 'days'}',
                         style: theme.textTheme.headlineSmall?.copyWith(
@@ -275,17 +278,17 @@ class _GamificationScreenState extends State<GamificationScreen>
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: context.rh(12)),
 
           // Native Ad (AdMob Compliant)
           const NativeAdWidget(screenId: 'gamification_screen_top'),
 
           // Achievements Summary
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(context.rw(14)),
             decoration: BoxDecoration(
               color: theme.colorScheme.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(context.rw(10)),
               border: Border.all(
                 color: theme.colorScheme.primary.withValues(alpha: 0.3),
                 width: 1,
@@ -299,9 +302,9 @@ class _GamificationScreenState extends State<GamificationScreen>
                     Icon(
                       Icons.stars,
                       color: theme.colorScheme.primary,
-                      size: 28,
+                      size: context.rw(22),
                     ),
-                    const SizedBox(width: 12),
+                    SizedBox(width: context.rw(10)),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -324,12 +327,12 @@ class _GamificationScreenState extends State<GamificationScreen>
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                SizedBox(height: context.rh(12)),
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(context.rw(8)),
                   child: LinearProgressIndicator(
                     value: totalCount > 0 ? unlockedCount / totalCount : 0,
-                    minHeight: 8,
+                    minHeight: context.rh(8),
                     backgroundColor: theme.colorScheme.surfaceContainerHighest,
                   ),
                 ),
@@ -373,13 +376,19 @@ class _GamificationScreenState extends State<GamificationScreen>
     return Column(
       children: [
         // Native Ad at top of achievements
-        const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: context.rw(16),
+            vertical: context.rh(8),
+          ),
           child: NativeAdWidget(screenId: 'gamification_screen_achievements'),
         ),
         // Filter chips
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: EdgeInsets.symmetric(
+            horizontal: context.rw(16),
+            vertical: context.rh(12),
+          ),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -389,7 +398,7 @@ class _GamificationScreenState extends State<GamificationScreen>
                   selected: _achievementFilter == 'all',
                   onSelected: (_) => setState(() => _achievementFilter = 'all'),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: context.rw(8)),
                 FilterChip(
                   label: Text(
                     'Unlocked (${achievements.where((a) => a.isUnlocked).length})',
@@ -398,7 +407,7 @@ class _GamificationScreenState extends State<GamificationScreen>
                   onSelected: (_) =>
                       setState(() => _achievementFilter = 'unlocked'),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: context.rw(8)),
                 FilterChip(
                   label: Text(
                     'Locked (${achievements.where((a) => !a.isUnlocked).length})',
@@ -421,17 +430,17 @@ class _GamificationScreenState extends State<GamificationScreen>
                 children: [
                   Icon(
                     Icons.emoji_events_outlined,
-                    size: 80,
+                    size: context.rw(60),
                     color: Colors.grey.shade300,
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: context.rh(16)),
                   Text(
                     'No achievements found',
                     style: theme.textTheme.titleLarge?.copyWith(
                       color: Colors.grey.shade600,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: context.rh(8)),
                   Text(
                     'Complete tasks to unlock achievements!',
                     style: theme.textTheme.bodyMedium?.copyWith(
@@ -445,7 +454,7 @@ class _GamificationScreenState extends State<GamificationScreen>
         else
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(context.rw(16)),
               children: [
                 if (unlockedAchievements.isNotEmpty) ...[
                   Row(
@@ -453,9 +462,9 @@ class _GamificationScreenState extends State<GamificationScreen>
                       Icon(
                         Icons.stars,
                         color: theme.colorScheme.primary,
-                        size: 24,
+                        size: context.rw(24),
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: context.rw(8)),
                       Text(
                         'Unlocked (${unlockedAchievements.length})',
                         style: theme.textTheme.titleLarge?.copyWith(
@@ -485,11 +494,11 @@ class _GamificationScreenState extends State<GamificationScreen>
                             child: AchievementCard(achievement: achievement),
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: context.rh(8)),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: context.rh(16)),
                 ],
                 if (lockedAchievements.isNotEmpty) ...[
                   Row(
@@ -497,9 +506,9 @@ class _GamificationScreenState extends State<GamificationScreen>
                       Icon(
                         Icons.lock_outline,
                         color: Colors.grey.shade600,
-                        size: 24,
+                        size: context.rw(24),
                       ),
-                      const SizedBox(width: 8),
+                      SizedBox(width: context.rw(8)),
                       Text(
                         'Locked (${lockedAchievements.length})',
                         style: theme.textTheme.titleLarge?.copyWith(
@@ -565,7 +574,7 @@ class _GamificationScreenState extends State<GamificationScreen>
         .length;
 
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(context.rw(16)),
       children: [
         _buildStatCard(
           icon: Icons.task_alt,
@@ -574,7 +583,7 @@ class _GamificationScreenState extends State<GamificationScreen>
           color: Colors.green,
           theme: theme,
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: context.rh(12)),
         _buildStatCard(
           icon: Icons.add_task,
           title: 'Total Tasks Created',
@@ -582,7 +591,7 @@ class _GamificationScreenState extends State<GamificationScreen>
           color: Colors.blue,
           theme: theme,
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: context.rh(12)),
         _buildStatCard(
           icon: Icons.trending_up,
           title: 'Completion Rate',
@@ -590,11 +599,11 @@ class _GamificationScreenState extends State<GamificationScreen>
           color: Colors.purple,
           theme: theme,
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: context.rh(12)),
 
         // Native Ad
         const NativeAdWidget(screenId: 'gamification_screen_stats'),
-        const SizedBox(height: 12),
+        SizedBox(height: context.rh(12)),
 
         _buildStatCard(
           icon: Icons.emoji_events,
@@ -603,7 +612,7 @@ class _GamificationScreenState extends State<GamificationScreen>
           color: Colors.amber,
           theme: theme,
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: context.rh(12)),
         _buildStatCard(
           icon: Icons.calendar_today,
           title: 'Perfect Weeks',
@@ -611,7 +620,7 @@ class _GamificationScreenState extends State<GamificationScreen>
           color: Colors.orange,
           theme: theme,
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: context.rh(12)),
         _buildStatCard(
           icon: Icons.stars,
           title: 'Achievements Unlocked',
@@ -634,25 +643,25 @@ class _GamificationScreenState extends State<GamificationScreen>
     return Card(
       elevation: 2,
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(context.rw(16)),
         child: Row(
           children: [
             Container(
-              width: 56,
-              height: 56,
+              width: context.rw(44),
+              height: context.rw(44),
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, color: color, size: 28),
+              child: Icon(icon, color: color, size: context.rw(22)),
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: context.rw(12)),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(title, style: theme.textTheme.bodyMedium),
-                  const SizedBox(height: 4),
+                  SizedBox(height: context.rh(4)),
                   Text(
                     value,
                     style: theme.textTheme.headlineSmall?.copyWith(
