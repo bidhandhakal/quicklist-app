@@ -97,4 +97,4 @@ flutter pub run build_runner build --delete-conflicting-outputs
 
 ---
 
-**Made with ❤️ using Flutter**
+**Made by [@bidhanxcode](https://x.com/bidhanxcode)**
