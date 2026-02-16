@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../utils/constants.dart';
+
 class CustomDialog {
   static Future<bool?> showConfirmation(
     BuildContext context, {
@@ -18,7 +20,7 @@ class CustomDialog {
                 icon,
                 color: isDanger
                     ? Theme.of(context).colorScheme.error
-                    : Theme.of(context).primaryColor,
+                    : AppColors.iconDefault,
               )
             : null,
         title: Text(title),

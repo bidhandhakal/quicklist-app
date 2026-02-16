@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../../config/routes.dart';
 import '../../controllers/task_controller.dart';
 import '../../utils/size_config.dart';
 import '../widgets/custom_bottom_nav_bar.dart';
 import 'home_screen.dart';
+import 'add_task_screen.dart';
 import 'category_screen.dart';
 import 'gamification_screen.dart';
 
@@ -18,9 +18,11 @@ class MainShell extends StatefulWidget {
   State<MainShell> createState() => _MainShellState();
 }
 
-class _MainShellState extends State<MainShell> {
+class _MainShellState extends State<MainShell>
+    with SingleTickerProviderStateMixin {
   late int _currentIndex;
-  late final PageController _pageController;
+  late final AnimationController _fadeController;
+  late final Animation<double> _fadeAnimation;
 
   final List<Widget> _screens = const [
     HomeScreen(),
@@ -32,23 +34,29 @@ class _MainShellState extends State<MainShell> {
   void initState() {
     super.initState();
     _currentIndex = widget.initialIndex;
-    _pageController = PageController(initialPage: _currentIndex);
+    _fadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+      value: 1.0,
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _fadeController,
+      curve: Curves.easeOut,
+    );
   }
 
   @override
   void dispose() {
-    _pageController.dispose();
+    _fadeController.dispose();
     super.dispose();
   }
 
   void _onTabChanged(int index) {
     if (index == _currentIndex) return;
+
+    _fadeController.value = 0.0;
     setState(() => _currentIndex = index);
-    _pageController.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 350),
-      curve: Curves.easeInOut,
-    );
+    _fadeController.forward();
   }
 
   @override
@@ -80,18 +88,16 @@ class _MainShellState extends State<MainShell> {
           }
         },
         child: Scaffold(
-          body: PageView(
-            controller: _pageController,
-            physics: const NeverScrollableScrollPhysics(),
-            onPageChanged: (index) => setState(() => _currentIndex = index),
-            children: _screens,
+          body: FadeTransition(
+            opacity: _fadeAnimation,
+            child: IndexedStack(index: _currentIndex, children: _screens),
           ),
           bottomNavigationBar: CustomBottomNavBar(
             currentIndex: _currentIndex,
             onTabChanged: _onTabChanged,
             onFabPressed: () async {
               final controller = context.read<TaskController>();
-              await Navigator.pushNamed(context, AppRoutes.addTask);
+              await AddTaskScreen.show(context);
               if (mounted) {
                 controller.loadTasks();
               }

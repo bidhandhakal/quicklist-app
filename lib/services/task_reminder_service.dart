@@ -66,6 +66,9 @@ class TaskReminderService {
 
   // Schedule reminder for a specific task
   Future<void> scheduleTaskReminder(Task task) async {
+    final storageService = LocalStorageService.instance;
+    if (!storageService.notificationsEnabled) return;
+
     if (task.reminderEnabled &&
         task.reminderTime != null &&
         !task.isCompleted) {

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../config/routes.dart';
 import '../../utils/size_config.dart';
+import '../screens/add_task_screen.dart';
 
-class CustomBottomNavBar extends StatelessWidget {
+class CustomBottomNavBar extends StatefulWidget {
   final int currentIndex;
   final VoidCallback? onFabPressed;
   final ValueChanged<int>? onTabChanged;
@@ -15,11 +15,60 @@ class CustomBottomNavBar extends StatelessWidget {
     this.onTabChanged,
   });
 
+  @override
+  State<CustomBottomNavBar> createState() => _CustomBottomNavBarState();
+}
+
+class _CustomBottomNavBarState extends State<CustomBottomNavBar>
+    with TickerProviderStateMixin {
   static const _items = [
     _NavItem(icon: Icons.home_rounded, label: 'Home'),
     _NavItem(icon: Icons.folder_rounded, label: 'Category'),
     _NavItem(icon: Icons.emoji_events_rounded, label: 'Achievements'),
   ];
+
+  late final List<AnimationController> _scaleControllers;
+  late final List<Animation<double>> _scaleAnimations;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Scale bounce controllers for each tab
+    _scaleControllers = List.generate(
+      _items.length,
+      (_) => AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 150),
+      ),
+    );
+
+    _scaleAnimations = _scaleControllers.map((c) {
+      return TweenSequence<double>([
+        TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.92), weight: 50),
+        TweenSequenceItem(tween: Tween(begin: 0.92, end: 1.0), weight: 50),
+      ]).animate(CurvedAnimation(parent: c, curve: Curves.easeInOut));
+    }).toList();
+  }
+
+  @override
+  void dispose() {
+    for (final c in _scaleControllers) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  void _onTap(int index) {
+    if (index == widget.currentIndex) return;
+
+    // Trigger scale bounce on the tapped item
+    _scaleControllers[index].forward(from: 0.0);
+
+    if (widget.onTabChanged != null) {
+      widget.onTabChanged!(index);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,13 +91,14 @@ class CustomBottomNavBar extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: List.generate(_items.length, (index) {
-                    final isActive = index == currentIndex;
+                    final isActive = index == widget.currentIndex;
                     return _buildNavItem(
                       context,
+                      index: index,
                       icon: _items[index].icon,
                       label: _items[index].label,
                       isActive: isActive,
-                      onTap: () => _onTap(context, index),
+                      onTap: () => _onTap(index),
                     );
                   }),
                 ),
@@ -59,9 +109,7 @@ class CustomBottomNavBar extends StatelessWidget {
 
             // FAB button
             GestureDetector(
-              onTap:
-                  onFabPressed ??
-                  () => Navigator.pushNamed(context, AppRoutes.addTask),
+              onTap: widget.onFabPressed ?? () => AddTaskScreen.show(context),
               child: Container(
                 width: context.rw(56),
                 height: context.rw(56),
@@ -84,6 +132,7 @@ class CustomBottomNavBar extends StatelessWidget {
 
   Widget _buildNavItem(
     BuildContext context, {
+    required int index,
     required IconData icon,
     required String label,
     required bool isActive,
@@ -92,56 +141,92 @@ class CustomBottomNavBar extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeInOut,
-        padding: EdgeInsets.symmetric(
-          horizontal: context.rw(18),
-          vertical: context.rh(8),
-        ),
-        decoration: BoxDecoration(
-          color: isActive ? Colors.white : Colors.transparent,
-          borderRadius: BorderRadius.circular(context.rw(28)),
-          boxShadow: isActive
-              ? [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.06),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : [],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              size: context.rw(22),
-              color: isActive ? const Color(0xFF1C1C1E) : Colors.grey[500],
-            ),
-            if (isActive) ...[
-              SizedBox(width: context.rw(6)),
-              Text(
-                label,
-                style: GoogleFonts.manrope(
-                  fontSize: context.rf(13),
-                  fontWeight: FontWeight.w700,
-                  color: const Color(0xFF1C1C1E),
+      child: AnimatedBuilder(
+        animation: _scaleAnimations[index],
+        builder: (context, child) {
+          return Transform.scale(
+            scale: _scaleAnimations[index].value,
+            child: child,
+          );
+        },
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeOutCubic,
+          padding: EdgeInsets.symmetric(
+            horizontal: isActive ? context.rw(18) : context.rw(14),
+            vertical: context.rh(8),
+          ),
+          decoration: BoxDecoration(
+            color: isActive ? Colors.white : Colors.transparent,
+            borderRadius: BorderRadius.circular(context.rw(28)),
+            boxShadow: isActive
+                ? [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 10,
+                      spreadRadius: 0,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : [],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Animated icon color
+              TweenAnimationBuilder<Color?>(
+                tween: ColorTween(
+                  end: isActive
+                      ? const Color(0xFF1C1C1E)
+                      : const Color(0xFFAEAEB2),
                 ),
+                duration: const Duration(milliseconds: 350),
+                curve: Curves.easeOut,
+                builder: (context, color, _) =>
+                    Icon(icon, size: context.rw(22), color: color),
+              ),
+              // Animated label with clip + slide + fade
+              AnimatedSize(
+                duration: const Duration(milliseconds: 350),
+                curve: Curves.easeOutCubic,
+                clipBehavior: Clip.hardEdge,
+                child: isActive
+                    ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(width: context.rw(6)),
+                          TweenAnimationBuilder<double>(
+                            key: ValueKey('label_$index'),
+                            tween: Tween(begin: 0.0, end: 1.0),
+                            duration: const Duration(milliseconds: 350),
+                            curve: Curves.easeOutCubic,
+                            builder: (context, value, child) {
+                              return Opacity(
+                                opacity: value,
+                                child: Transform.translate(
+                                  offset: Offset(-8 * (1 - value), 0),
+                                  child: child,
+                                ),
+                              );
+                            },
+                            child: Text(
+                              label,
+                              style: GoogleFonts.manrope(
+                                fontSize: context.rf(13),
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFF1C1C1E),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : const SizedBox.shrink(),
               ),
             ],
-          ],
+          ),
         ),
       ),
     );
-  }
-
-  void _onTap(BuildContext context, int index) {
-    if (index == currentIndex) return;
-    if (onTabChanged != null) {
-      onTabChanged!(index);
-    }
   }
 }
 

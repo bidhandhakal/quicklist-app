@@ -87,7 +87,7 @@ class InfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final iColor = iconColor ?? theme.primaryColor;
+    final iColor = iconColor ?? AppColors.iconDefault;
     final bgColor = backgroundColor ?? iColor.withValues(alpha: 0.1);
 
     return CustomCard(
@@ -159,7 +159,7 @@ class StatsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final cardColor = color ?? theme.primaryColor;
+    final cardColor = color ?? AppColors.iconDefault;
 
     return CustomCard(
       onTap: onTap,

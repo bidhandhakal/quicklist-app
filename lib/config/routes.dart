@@ -16,7 +16,6 @@ class AppRoutes {
   static Map<String, WidgetBuilder> getRoutes() {
     return {
       home: (context) => const MainShell(initialIndex: 0),
-      addTask: (context) => const AddTaskScreen(),
       category: (context) => const MainShell(initialIndex: 1),
       settings: (context) => const SettingsScreen(),
       calendar: (context) => const CalendarScreen(),
@@ -27,9 +26,18 @@ class AppRoutes {
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case editTask:
+        // Legacy route support — open as bottom sheet instead
         final taskId = settings.arguments as String?;
         return MaterialPageRoute(
-          builder: (context) => AddTaskScreen(taskId: taskId),
+          builder: (context) {
+            // Show bottom sheet after frame, then pop the empty page
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              AddTaskScreen.show(context, taskId: taskId).then((_) {
+                if (context.mounted) Navigator.pop(context);
+              });
+            });
+            return const SizedBox.shrink();
+          },
         );
       default:
         return null;

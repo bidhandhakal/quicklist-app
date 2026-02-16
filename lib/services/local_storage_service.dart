@@ -4,6 +4,8 @@ import '../models/category_model.dart';
 import '../models/achievement_model.dart';
 import '../models/daily_goal_model.dart';
 import '../models/streak_model.dart';
+import '../models/subtask_model.dart';
+import '../models/task_attachment_model.dart';
 import '../utils/constants.dart';
 
 class LocalStorageService {
@@ -27,11 +29,17 @@ class LocalStorageService {
       if (!Hive.isAdapterRegistered(0)) {
         Hive.registerAdapter(TaskAdapter());
       }
-      if (!Hive.isAdapterRegistered(4)) {
-        Hive.registerAdapter(CategoryAdapter());
+      if (!Hive.isAdapterRegistered(1)) {
+        Hive.registerAdapter(RecurrencePatternAdapter());
+      }
+      if (!Hive.isAdapterRegistered(2)) {
+        Hive.registerAdapter(SubtaskAdapter());
+      }
+      if (!Hive.isAdapterRegistered(3)) {
+        Hive.registerAdapter(TaskAttachmentAdapter());
       }
       if (!Hive.isAdapterRegistered(4)) {
-        Hive.registerAdapter(AchievementAdapter());
+        Hive.registerAdapter(CategoryAdapter());
       }
       if (!Hive.isAdapterRegistered(5)) {
         Hive.registerAdapter(AchievementTypeAdapter());
@@ -41,6 +49,9 @@ class LocalStorageService {
       }
       if (!Hive.isAdapterRegistered(7)) {
         Hive.registerAdapter(StreakAdapter());
+      }
+      if (!Hive.isAdapterRegistered(8)) {
+        Hive.registerAdapter(AchievementAdapter());
       }
 
       // Open boxes

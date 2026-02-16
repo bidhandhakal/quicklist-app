@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../../controllers/task_controller.dart';
@@ -9,6 +8,7 @@ import '../../utils/constants.dart';
 import '../widgets/task_tile.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/banner_ad_widget.dart';
+import 'add_task_screen.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({super.key});
@@ -154,7 +154,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await Navigator.pushNamed(context, AppRoutes.addTask);
+          await AddTaskScreen.show(context);
           if (mounted) {
             setState(() {}); // Refresh calendar
           }
@@ -205,7 +205,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         message: 'No tasks scheduled for this date',
         action: FilledButton.icon(
           onPressed: () {
-            Navigator.pushNamed(context, AppRoutes.addTask);
+            AddTaskScreen.show(context);
           },
           icon: const Icon(Icons.add),
           label: const Text('Add Task'),

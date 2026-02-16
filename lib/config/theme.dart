@@ -28,6 +28,8 @@ class AppTheme {
         onSurfaceVariant: AppColors.onSurfaceVariant,
         outline: AppColors.outline,
         outlineVariant: AppColors.outlineVariant,
+        shadow: Colors.black,
+        surfaceTint: Colors.transparent,
       ),
 
       appBarTheme: AppBarTheme(
@@ -36,6 +38,11 @@ class AppTheme {
         backgroundColor:
             Colors.transparent, // Make AppBar transparent to show background
         foregroundColor: AppColors.onSurface,
+        iconTheme: const IconThemeData(color: AppColors.iconDefault, size: 24),
+        actionsIconTheme: const IconThemeData(
+          color: AppColors.iconDefault,
+          size: 24,
+        ),
         titleTextStyle: GoogleFonts.manrope(
           fontSize: 18,
           fontWeight: FontWeight.w700,
@@ -67,6 +74,91 @@ class AppTheme {
         shape: CircleBorder(),
       ),
 
+      // Filled Button Theme
+      filledButtonTheme: FilledButtonThemeData(
+        style: FilledButton.styleFrom(
+          backgroundColor: AppColors.primary,
+          foregroundColor: AppColors.onPrimary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppColors.radiusSM),
+          ),
+          textStyle: GoogleFonts.manrope(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+
+      // Text Button Theme
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: AppColors.primary,
+          textStyle: GoogleFonts.manrope(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+
+      // Outlined Button Theme
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.primary,
+          side: const BorderSide(color: AppColors.outline),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppColors.radiusSM),
+          ),
+          textStyle: GoogleFonts.manrope(
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+
+      // Switch Theme
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.surface;
+          }
+          return AppColors.outline;
+        }),
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return AppColors.primary;
+          }
+          return AppColors.surfaceSecondary;
+        }),
+        trackOutlineColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return Colors.transparent;
+          }
+          return AppColors.outline;
+        }),
+      ),
+
+      // Chip Theme (covers Filter & Choice chips)
+      chipTheme: ChipThemeData(
+        backgroundColor: AppColors.surfaceSecondary,
+        selectedColor: AppColors.primary.withValues(alpha: 0.1),
+        checkmarkColor: AppColors.primary,
+        labelStyle: GoogleFonts.manrope(
+          color: AppColors.onSurface,
+          fontSize: 13,
+          fontWeight: FontWeight.w500,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppColors.radiusXS),
+        ),
+      ),
+
+      // Progress Indicator Theme
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
+        color: AppColors.primary,
+        linearTrackColor: AppColors.surfaceSecondary,
+      ),
+
       // Input Decoration Theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -91,24 +183,22 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppColors.radiusSM),
           borderSide: const BorderSide(color: AppColors.error, width: 2),
         ),
+        labelStyle: GoogleFonts.manrope(
+          color: AppColors.onSurfaceSecondary,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
+        ),
+        hintStyle: GoogleFonts.manrope(
+          color: AppColors.onSurfaceSecondary,
+          fontSize: 14,
+          fontWeight: FontWeight.w400,
+        ),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 14,
           vertical: 12,
         ),
-      ),
-
-      // Chip Theme
-      chipTheme: ChipThemeData(
-        backgroundColor: AppColors.surfaceSecondary,
-        labelStyle: GoogleFonts.manrope(
-          color: AppColors.onSurface,
-          fontSize: 11,
-          fontWeight: FontWeight.w500,
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppColors.radiusXS),
-        ),
+        prefixIconColor: AppColors.iconDefault,
+        suffixIconColor: AppColors.iconDefault,
       ),
 
       // Bottom Navigation Bar Theme
@@ -236,7 +326,7 @@ class AppTheme {
       ),
 
       // Icon Theme
-      iconTheme: const IconThemeData(color: AppColors.onSurface, size: 24),
+      iconTheme: const IconThemeData(color: AppColors.iconDefault, size: 24),
 
       // Divider Theme
       dividerTheme: const DividerThemeData(
