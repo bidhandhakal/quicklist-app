@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../services/local_storage_service.dart';
 import '../../services/notification_service.dart';
 import '../../services/rewarded_ad_manager.dart';
@@ -192,13 +193,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     subtitle: 'Version 1.3.0',
                   ),
                   SizedBox(height: context.rh(20)),
-                  Center(
-                    child: Text(
-                      'Made with ❤️ using Flutter',
-                      style: GoogleFonts.manrope(
-                        fontSize: context.rf(12),
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.onSurfaceSecondary,
+                  GestureDetector(
+                    onTap: () => launchUrl(
+                      Uri.parse('https://x.com/bidhanxcode'),
+                      mode: LaunchMode.externalApplication,
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Made by @bidhanxcode',
+                        style: GoogleFonts.manrope(
+                          fontSize: context.rf(12),
+                          fontWeight: FontWeight.w500,
+                          color: const Color.fromARGB(255, 29, 29, 29),
+                        ),
                       ),
                     ),
                   ),
