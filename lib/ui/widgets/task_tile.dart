@@ -71,12 +71,12 @@ class TaskTile extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: task.isCompleted
-                          ? const Color(0xFF007AFF)
-                          : Colors.grey.withValues(alpha: 0.4),
+                          ? AppColors.primary
+                          : AppColors.onSurfaceSecondary.withValues(alpha: 0.4),
                       width: 2,
                     ),
                     color: task.isCompleted
-                        ? const Color(0xFF007AFF)
+                        ? AppColors.primary
                         : Colors.transparent,
                   ),
                   child: task.isCompleted
@@ -105,8 +105,8 @@ class TaskTile extends StatelessWidget {
                             ? TextDecoration.lineThrough
                             : null,
                         color: task.isCompleted
-                            ? Colors.grey[400]
-                            : Colors.black87,
+                            ? AppColors.onSurfaceSecondary
+                            : AppColors.onSurface,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -120,7 +120,7 @@ class TaskTile extends StatelessWidget {
                         task.description!,
                         style: GoogleFonts.manrope(
                           fontSize: context.rf(12),
-                          color: Colors.grey[600],
+                          color: AppColors.onSurfaceSecondary,
                           height: 1.4,
                         ),
                         maxLines: 1,
@@ -182,7 +182,7 @@ class TaskTile extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: task.isOverdue
                                   ? AppColors.error.withValues(alpha: 0.1)
-                                  : Colors.blueGrey.withValues(alpha: 0.05),
+                                  : AppColors.surfaceSecondary,
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Row(
@@ -195,7 +195,7 @@ class TaskTile extends StatelessWidget {
                                   size: 12,
                                   color: task.isOverdue
                                       ? AppColors.error
-                                      : Colors.grey[600],
+                                      : AppColors.onSurfaceSecondary,
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
@@ -204,7 +204,7 @@ class TaskTile extends StatelessWidget {
                                     fontSize: 11,
                                     color: task.isOverdue
                                         ? AppColors.error
-                                        : Colors.grey[600],
+                                        : AppColors.onSurfaceSecondary,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
@@ -219,7 +219,10 @@ class TaskTile extends StatelessWidget {
 
               // More options
               IconButton(
-                icon: Icon(Icons.more_vert, color: Colors.grey[400]),
+                icon: Icon(
+                  Icons.more_vert,
+                  color: AppColors.onSurfaceSecondary,
+                ),
                 onPressed: () => _showTaskOptions(context),
                 iconSize: 20,
               ),
@@ -237,13 +240,13 @@ class TaskTile extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
         color: isLeft
-            ? const Color(0xFF007AFF).withValues(alpha: 0.2)
+            ? AppColors.primary.withValues(alpha: 0.2)
             : AppColors.error.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Icon(
         isLeft ? Icons.check_circle_rounded : Icons.delete_rounded,
-        color: isLeft ? const Color(0xFF007AFF) : AppColors.error,
+        color: isLeft ? AppColors.primary : AppColors.error,
         size: 28,
       ),
     );

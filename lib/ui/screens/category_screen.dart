@@ -5,11 +5,11 @@ import '../../controllers/task_controller.dart';
 import '../../data/dummy_categories.dart';
 import 'package:provider/provider.dart';
 import '../../utils/size_config.dart';
+import '../../utils/constants.dart';
 import '../widgets/task_tile.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/native_ad_widget.dart';
 import '../widgets/banner_ad_widget.dart';
-import '../widgets/custom_bottom_nav_bar.dart';
 
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({super.key});
@@ -17,18 +17,9 @@ class CategoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.dark,
-          systemNavigationBarColor: Colors.transparent,
-          systemNavigationBarIconBrightness: Brightness.dark,
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
-          onPressed: () =>
-              Navigator.of(context).pushReplacementNamed(AppRoutes.home),
-        ),
+        automaticallyImplyLeading: false,
         title: const Text('Categories'),
       ),
       body: Column(
@@ -65,10 +56,23 @@ class CategoryScreen extends StatelessWidget {
                         .where((t) => t.isCompleted)
                         .length;
 
-                    return Card(
+                    return Container(
                       margin: EdgeInsets.symmetric(
                         horizontal: context.rw(16),
                         vertical: context.rh(6),
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.surface,
+                        borderRadius: BorderRadius.circular(
+                          context.rw(AppColors.radiusMD),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.cardShadow,
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
                       child: InkWell(
                         onTap: () {
@@ -80,7 +84,9 @@ class CategoryScreen extends StatelessWidget {
                             ),
                           );
                         },
-                        borderRadius: BorderRadius.circular(context.rw(16)),
+                        borderRadius: BorderRadius.circular(
+                          context.rw(AppColors.radiusMD),
+                        ),
                         child: Padding(
                           padding: EdgeInsets.all(context.rw(14)),
                           child: Row(
@@ -173,7 +179,6 @@ class CategoryScreen extends StatelessWidget {
           const BannerAdWidget(screenId: 'category'),
         ],
       ),
-      bottomNavigationBar: const CustomBottomNavBar(currentIndex: 1),
     );
   }
 }
@@ -187,6 +192,7 @@ class CategoryDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Row(
           mainAxisSize: MainAxisSize.min,
@@ -195,12 +201,6 @@ class CategoryDetailScreen extends StatelessWidget {
             SizedBox(width: context.rw(8)),
             Text(category.name),
           ],
-        ),
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.dark,
-          systemNavigationBarColor: Colors.transparent,
-          systemNavigationBarIconBrightness: Brightness.dark,
         ),
       ),
       body: Column(

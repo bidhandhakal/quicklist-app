@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../utils/constants.dart';
 
 /// Customizable card widget with consistent styling
 class CustomCard extends StatelessWidget {
@@ -38,7 +39,7 @@ class CustomCard extends StatelessWidget {
         boxShadow: elevated
             ? [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
+                  color: AppColors.cardShadow,
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),

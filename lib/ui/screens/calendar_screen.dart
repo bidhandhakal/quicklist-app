@@ -5,6 +5,7 @@ import 'package:table_calendar/table_calendar.dart';
 import '../../controllers/task_controller.dart';
 import '../../config/routes.dart';
 import '../../utils/size_config.dart';
+import '../../utils/constants.dart';
 import '../widgets/task_tile.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/banner_ad_widget.dart';
@@ -31,13 +32,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget build(BuildContext context) {
     SizeConfig.init(context);
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.dark,
-          systemNavigationBarColor: Colors.transparent,
-          systemNavigationBarIconBrightness: Brightness.dark,
-        ),
         title: const Text('Calendar'),
         actions: [
           IconButton(

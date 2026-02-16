@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// Customizable primary button with loading state
 class CustomButton extends StatelessWidget {
@@ -23,8 +24,8 @@ class CustomButton extends StatelessWidget {
     this.backgroundColor,
     this.textColor,
     this.width,
-    this.height = 44,
-    this.borderRadius = 10,
+    this.height = 48,
+    this.borderRadius = 12,
   });
 
   @override
@@ -84,7 +85,7 @@ class CustomButton extends StatelessWidget {
           const SizedBox(width: 8),
           Text(
             text,
-            style: TextStyle(
+            style: GoogleFonts.manrope(
               fontSize: 16,
               fontWeight: FontWeight.w600,
               color: color,
@@ -96,7 +97,11 @@ class CustomButton extends StatelessWidget {
 
     return Text(
       text,
-      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: color),
+      style: GoogleFonts.manrope(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: color,
+      ),
     );
   }
 }

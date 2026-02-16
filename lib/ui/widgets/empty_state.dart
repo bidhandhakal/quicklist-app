@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../utils/constants.dart';
 
 class EmptyState extends StatelessWidget {
   final String title;
@@ -30,33 +32,32 @@ class EmptyState extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
-                color: const Color(0xFFF2F2F7), // iOS light grey
+                color: AppColors.surfaceSecondary,
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 icon ?? Icons.check_circle_outline_rounded,
                 size: 40,
-                color: Colors.grey.shade400,
+                color: AppColors.onSurfaceSecondary,
               ),
             ),
             const SizedBox(height: 20),
             Text(
               title,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: GoogleFonts.manrope(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: Colors.black87,
-                fontFamily: 'SF Pro Display',
+                color: AppColors.onSurface,
               ),
             ),
             const SizedBox(height: 6),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: GoogleFonts.manrope(
                 fontSize: 14,
-                color: Colors.grey.shade500,
+                color: AppColors.onSurfaceSecondary,
                 height: 1.4,
               ),
             ),
@@ -67,8 +68,8 @@ class EmptyState extends StatelessWidget {
               TextButton(
                 onPressed: onButtonPressed,
                 style: TextButton.styleFrom(
-                  foregroundColor: const Color(0xFF007AFF),
-                  textStyle: const TextStyle(
+                  foregroundColor: AppColors.primary,
+                  textStyle: GoogleFonts.manrope(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
