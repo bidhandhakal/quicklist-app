@@ -7,6 +7,7 @@ import '../../controllers/task_controller.dart';
 import '../../config/routes.dart';
 import '../../services/gamification_service.dart';
 import '../../utils/size_config.dart';
+import '../../utils/constants.dart';
 import '../widgets/task_tile.dart';
 import '../widgets/daily_goal_card.dart';
 import '../widgets/streak_card.dart';
@@ -44,54 +45,46 @@ class _HomeScreenState extends State<HomeScreen>
     // Initialize SizeConfig
     SizeConfig.init(context);
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.transparent,
-        systemNavigationBarIconBrightness: Brightness.dark,
-      ),
-      child: Scaffold(
-        backgroundColor: const Color(0xFFF6F8FB), // Light greyish blue match
-        body: SafeArea(
-          child: Consumer<TaskController>(
-            builder: (context, taskController, child) {
-              return SingleChildScrollView(
-                padding: EdgeInsets.symmetric(
-                  horizontal: context.rw(16),
-                  vertical: context.rh(8),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Custom Header
-                    _buildHeader(context),
-                    SizedBox(height: context.rh(20)),
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      body: SafeArea(
+        child: Consumer<TaskController>(
+          builder: (context, taskController, child) {
+            return SingleChildScrollView(
+              padding: EdgeInsets.symmetric(
+                horizontal: context.rw(16),
+                vertical: context.rh(8),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Custom Header
+                  _buildHeader(context),
+                  SizedBox(height: context.rh(20)),
 
-                    // Dashboard (2 Column Layout)
-                    _buildDashboard(taskController, context),
-                    SizedBox(height: context.rh(24)),
+                  // Dashboard (2 Column Layout)
+                  _buildDashboard(taskController, context),
+                  SizedBox(height: context.rh(24)),
 
-                    // Tasks Header & Tabs
-                    Text(
-                      'Tasks',
-                      style: GoogleFonts.manrope(
-                        fontSize: context.rf(18),
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
+                  // Tasks Header & Tabs
+                  Text(
+                    'Tasks',
+                    style: GoogleFonts.manrope(
+                      fontSize: context.rf(18),
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.onSurface,
                     ),
-                    SizedBox(height: context.rh(12)),
-                    _buildTabs(context),
-                    SizedBox(height: context.rh(16)),
+                  ),
+                  SizedBox(height: context.rh(12)),
+                  _buildTabs(context),
+                  SizedBox(height: context.rh(16)),
 
-                    // Task List
-                    _buildSyncedTaskList(taskController),
-                  ],
-                ),
-              );
-            },
-          ),
+                  // Task List
+                  _buildSyncedTaskList(taskController),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
@@ -111,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen>
               Text(
                 dayName,
                 style: GoogleFonts.manrope(
-                  color: Colors.black87,
+                  color: AppColors.onSurface,
                   fontSize: context.rf(26),
                   fontWeight: FontWeight.w800,
                   height: 1.1,
@@ -121,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen>
               Text(
                 dateString,
                 style: GoogleFonts.manrope(
-                  color: Colors.grey[600],
+                  color: AppColors.onSurfaceSecondary,
                   fontSize: context.rf(14),
                   fontWeight: FontWeight.w600,
                 ),
@@ -135,13 +128,19 @@ class _HomeScreenState extends State<HomeScreen>
           height: context.rw(38),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.white,
-            border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
+            color: AppColors.surface,
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.cardShadow,
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: IconButton(
             icon: Icon(
               Icons.settings_outlined,
-              color: Colors.black87,
+              color: AppColors.onSurface,
               size: context.rw(20),
             ),
             onPressed: () {
@@ -247,27 +246,27 @@ class _HomeScreenState extends State<HomeScreen>
     return Container(
       height: context.rh(38),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: AppColors.surfaceSecondary,
         borderRadius: BorderRadius.circular(context.rw(10)),
       ),
       padding: EdgeInsets.all(context.rw(3)),
       child: TabBar(
         controller: _tabController,
         indicator: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(context.rw(8)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 2,
+              color: AppColors.cardShadow,
+              blurRadius: 4,
               offset: const Offset(0, 1),
             ),
           ],
         ),
         indicatorSize: TabBarIndicatorSize.tab,
         dividerColor: Colors.transparent,
-        labelColor: Colors.black87,
-        unselectedLabelColor: Colors.grey[600],
+        labelColor: AppColors.onSurface,
+        unselectedLabelColor: AppColors.onSurfaceSecondary,
         labelStyle: GoogleFonts.manrope(
           fontWeight: FontWeight.bold,
           fontSize: context.rf(12),
@@ -277,7 +276,7 @@ class _HomeScreenState extends State<HomeScreen>
           fontSize: context.rf(12),
         ),
         tabs: const [
-          Tab(text: 'Today'),
+          Tab(text: 'To do'),
           Tab(text: 'Done'),
           Tab(text: 'All'),
         ],
@@ -329,13 +328,13 @@ class _HomeScreenState extends State<HomeScreen>
               Icon(
                 Icons.task_outlined,
                 size: context.rw(40),
-                color: Colors.grey[300],
+                color: AppColors.onSurfaceSecondary,
               ),
               SizedBox(height: context.rh(12)),
               Text(
                 "No tasks found",
                 style: GoogleFonts.manrope(
-                  color: Colors.grey[400],
+                  color: AppColors.onSurfaceSecondary,
                   fontSize: context.rf(13),
                 ),
               ),
@@ -368,11 +367,11 @@ class _HomeScreenState extends State<HomeScreen>
         // Consider modifying TaskTile if it doesn't match the "clean" look.
         return Container(
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(context.rw(14)),
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(context.rw(AppColors.radiusMD)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.02),
+                color: AppColors.cardShadow,
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),

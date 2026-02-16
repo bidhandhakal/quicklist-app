@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/achievement_model.dart';
+import '../../utils/constants.dart';
 
 class AchievementCard extends StatelessWidget {
   final Achievement achievement;
@@ -27,10 +28,10 @@ class AchievementCard extends StatelessWidget {
         : 0.0;
 
     return Card(
-      elevation: isUnlocked ? 2 : 1,
+      elevation: 0,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppColors.radiusMD),
           gradient: isUnlocked
               ? LinearGradient(
                   colors: [
@@ -71,7 +72,9 @@ class AchievementCard extends StatelessWidget {
                         achievement.icon,
                         style: TextStyle(
                           fontSize: 22,
-                          color: isUnlocked ? null : Colors.grey.shade400,
+                          color: isUnlocked
+                              ? null
+                              : AppColors.onSurfaceSecondary,
                         ),
                       ),
                     ),
@@ -92,7 +95,7 @@ class AchievementCard extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                   color: isUnlocked
                                       ? null
-                                      : Colors.grey.shade600,
+                                      : AppColors.onSurfaceSecondary,
                                 ),
                               ),
                             ),
@@ -136,7 +139,7 @@ class AchievementCard extends StatelessWidget {
                           style: theme.textTheme.bodySmall?.copyWith(
                             color: isUnlocked
                                 ? theme.textTheme.bodySmall?.color
-                                : Colors.grey.shade600,
+                                : AppColors.onSurfaceSecondary,
                           ),
                         ),
                         if (isUnlocked && achievement.unlockedAt != null) ...[
@@ -157,7 +160,7 @@ class AchievementCard extends StatelessWidget {
                   if (!isUnlocked)
                     Icon(
                       Icons.lock_outline,
-                      color: Colors.grey.shade400,
+                      color: AppColors.onSurfaceSecondary,
                       size: 24,
                     ),
                 ],
@@ -178,7 +181,7 @@ class AchievementCard extends StatelessWidget {
                         Text(
                           'Progress',
                           style: theme.textTheme.bodySmall?.copyWith(
-                            color: Colors.grey.shade600,
+                            color: AppColors.onSurfaceSecondary,
                             fontWeight: FontWeight.w500,
                           ),
                         ),

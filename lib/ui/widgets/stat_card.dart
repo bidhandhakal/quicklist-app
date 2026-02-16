@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../utils/size_config.dart';
+import '../../utils/constants.dart';
 
 class StatCard extends StatelessWidget {
   final String title;
@@ -33,12 +34,11 @@ class StatCard extends StatelessWidget {
           vertical: context.rh(12),
         ),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.surface,
           borderRadius: BorderRadius.circular(context.rw(20)),
-          // No heavy border, subtle shadow
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.03),
+              color: AppColors.cardShadow,
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -52,9 +52,7 @@ class StatCard extends StatelessWidget {
               width: context.rw(36),
               height: context.rw(36),
               decoration: BoxDecoration(
-                color: const Color(
-                  0xFF6C63FF,
-                ).withValues(alpha: 0.1), // Light version of icon color usually
+                color: iconColor.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(icon, color: iconColor, size: context.rw(18)),
@@ -71,16 +69,16 @@ class StatCard extends StatelessWidget {
                     style: GoogleFonts.manrope(
                       fontSize: context.rf(20),
                       fontWeight: FontWeight.w800,
-                      color: Colors.black87,
+                      color: AppColors.onSurface,
                       height: 1.0,
                     ),
                   ),
                   SizedBox(height: context.rh(2)),
                   Text(
-                    title, // "To Do" passed here usually as title
+                    title,
                     style: GoogleFonts.manrope(
                       fontSize: context.rf(11),
-                      color: Colors.grey[500],
+                      color: AppColors.onSurfaceSecondary,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

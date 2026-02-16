@@ -53,45 +53,42 @@ class AppTheme {
       cardTheme: CardThemeData(
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(
-            color: AppColors.outlineVariant.withValues(alpha: 0.5),
-            width: 1,
-          ),
+          borderRadius: BorderRadius.circular(AppColors.radiusMD),
         ),
+        color: AppColors.surface,
         margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
       ),
 
       // Floating Action Button Theme
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
-        elevation: 3,
-        backgroundColor: AppColors.primaryContainer,
-        foregroundColor: AppColors.onPrimaryContainer,
+        elevation: 0,
+        backgroundColor: AppColors.darkAccent,
+        foregroundColor: AppColors.onPrimary,
         shape: CircleBorder(),
       ),
 
       // Input Decoration Theme
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.surfaceVariant.withValues(alpha: 0.3),
+        fillColor: AppColors.surfaceSecondary,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(AppColors.radiusSM),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(AppColors.radiusSM),
           borderSide: BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(AppColors.radiusSM),
           borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(AppColors.radiusSM),
           borderSide: const BorderSide(color: AppColors.error, width: 1),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(AppColors.radiusSM),
           borderSide: const BorderSide(color: AppColors.error, width: 2),
         ),
         contentPadding: const EdgeInsets.symmetric(
@@ -102,37 +99,59 @@ class AppTheme {
 
       // Chip Theme
       chipTheme: ChipThemeData(
-        backgroundColor: AppColors.secondaryContainer,
-        labelStyle: const TextStyle(
-          color: AppColors.onSecondaryContainer,
+        backgroundColor: AppColors.surfaceSecondary,
+        labelStyle: GoogleFonts.manrope(
+          color: AppColors.onSurface,
           fontSize: 11,
           fontWeight: FontWeight.w500,
         ),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppColors.radiusXS),
+        ),
       ),
 
       // Bottom Navigation Bar Theme
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        backgroundColor: AppColors.surface,
-        selectedItemColor: AppColors.primary,
-        unselectedItemColor: AppColors.onSurfaceVariant,
+        backgroundColor: Colors.transparent,
+        selectedItemColor: AppColors.onSurface,
+        unselectedItemColor: AppColors.onSurfaceSecondary,
         type: BottomNavigationBarType.fixed,
         elevation: 0,
+      ),
+
+      // Tab Bar Theme
+      tabBarTheme: TabBarThemeData(
+        labelColor: AppColors.onSurface,
+        unselectedLabelColor: AppColors.onSurfaceSecondary,
+        labelStyle: GoogleFonts.manrope(
+          fontWeight: FontWeight.w700,
+          fontSize: 13,
+        ),
+        unselectedLabelStyle: GoogleFonts.manrope(
+          fontWeight: FontWeight.w500,
+          fontSize: 13,
+        ),
+        indicatorColor: AppColors.primary,
+        dividerColor: Colors.transparent,
       ),
 
       // Dialog Theme
       dialogTheme: DialogThemeData(
         backgroundColor: AppColors.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppColors.radiusLG),
+        ),
         elevation: 3,
       ),
 
       // Bottom Sheet Theme
-      bottomSheetTheme: const BottomSheetThemeData(
+      bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: AppColors.surface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(AppColors.radiusLG),
+          ),
         ),
         elevation: 3,
       ),

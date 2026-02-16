@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// Customizable text field with label, prefix, suffix
 class CustomTextField extends StatelessWidget {
@@ -52,7 +53,7 @@ class CustomTextField extends StatelessWidget {
         if (label != null) ...[
           Text(
             label!,
-            style: TextStyle(
+            style: GoogleFonts.manrope(
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: theme.colorScheme.onSurface,

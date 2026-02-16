@@ -6,6 +6,7 @@ import '../../services/ad_service.dart';
 import '../../services/interstitial_ad_manager.dart';
 import '../../models/achievement_model.dart';
 import '../../utils/size_config.dart';
+import '../../utils/constants.dart';
 import '../widgets/achievement_card.dart';
 import '../widgets/native_ad_widget.dart';
 
@@ -70,13 +71,8 @@ class _GamificationScreenState extends State<GamificationScreen>
     final gamificationService = GamificationService.instance;
 
     return Scaffold(
+      backgroundColor: AppColors.background,
       appBar: AppBar(
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: Colors.transparent,
-          statusBarIconBrightness: Brightness.dark,
-          systemNavigationBarColor: Colors.transparent,
-          systemNavigationBarIconBrightness: Brightness.dark,
-        ),
         title: const Text('Achievements & Stats'),
         bottom: TabBar(
           controller: _tabController,
@@ -125,22 +121,19 @@ class _GamificationScreenState extends State<GamificationScreen>
         children: [
           // Daily Goal Card
           Container(
-            padding: EdgeInsets.all(context.rw(14)),
+            padding: EdgeInsets.all(context.rw(16)),
             decoration: BoxDecoration(
-              color:
-                  (dailyGoal.isTodayGoalAchieved
-                          ? Colors.amber
-                          : theme.colorScheme.primary)
-                      .withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(context.rw(10)),
-              border: Border.all(
-                color:
-                    (dailyGoal.isTodayGoalAchieved
-                            ? Colors.amber
-                            : theme.colorScheme.primary)
-                        .withValues(alpha: 0.3),
-                width: 1,
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(
+                context.rw(AppColors.radiusMD),
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.cardShadow,
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,22 +205,19 @@ class _GamificationScreenState extends State<GamificationScreen>
 
           // Streak Card
           Container(
-            padding: EdgeInsets.all(context.rw(14)),
+            padding: EdgeInsets.all(context.rw(16)),
             decoration: BoxDecoration(
-              color:
-                  (streak.currentStreak > 0
-                          ? Colors.orange.shade700
-                          : Colors.grey)
-                      .withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(context.rw(10)),
-              border: Border.all(
-                color:
-                    (streak.currentStreak > 0
-                            ? Colors.orange.shade700
-                            : Colors.grey)
-                        .withValues(alpha: 0.3),
-                width: 1,
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(
+                context.rw(AppColors.radiusMD),
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.cardShadow,
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: Row(
               children: [
@@ -274,14 +264,19 @@ class _GamificationScreenState extends State<GamificationScreen>
 
           // Achievements Summary
           Container(
-            padding: EdgeInsets.all(context.rw(14)),
+            padding: EdgeInsets.all(context.rw(16)),
             decoration: BoxDecoration(
-              color: theme.colorScheme.primary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(context.rw(10)),
-              border: Border.all(
-                color: theme.colorScheme.primary.withValues(alpha: 0.3),
-                width: 1,
+              color: AppColors.surface,
+              borderRadius: BorderRadius.circular(
+                context.rw(AppColors.radiusMD),
               ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.cardShadow,
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

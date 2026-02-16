@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// Customizable chip widget
 class CustomChip extends StatelessWidget {
@@ -49,7 +50,7 @@ class CustomChip extends StatelessWidget {
               ],
               Text(
                 label,
-                style: TextStyle(
+                style: GoogleFonts.manrope(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                   color: txtColor,
@@ -136,7 +137,7 @@ class CategoryChip extends StatelessWidget {
               const SizedBox(width: 8),
               Text(
                 label,
-                style: TextStyle(
+                style: GoogleFonts.manrope(
                   fontSize: 13,
                   fontWeight: FontWeight.w600,
                   color: color,

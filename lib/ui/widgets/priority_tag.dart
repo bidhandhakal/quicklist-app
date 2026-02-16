@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../utils/constants.dart';
 
 class PriorityTag extends StatelessWidget {
@@ -16,10 +17,6 @@ class PriorityTag extends StatelessWidget {
       decoration: BoxDecoration(
         color: priority.color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: priority.color.withValues(alpha: 0.3),
-          width: 1,
-        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -36,7 +33,7 @@ class PriorityTag extends StatelessWidget {
             const SizedBox(width: 6),
             Text(
               priority.displayName,
-              style: TextStyle(
+              style: GoogleFonts.manrope(
                 color: priority.color,
                 fontSize: compact ? 11 : 12,
                 fontWeight: FontWeight.w600,

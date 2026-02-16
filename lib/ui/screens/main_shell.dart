@@ -62,23 +62,41 @@ class _MainShellState extends State<MainShell> {
         systemNavigationBarColor: Colors.transparent,
         systemNavigationBarIconBrightness: Brightness.dark,
       ),
-      child: Scaffold(
-        body: PageView(
-          controller: _pageController,
-          physics: const NeverScrollableScrollPhysics(),
-          onPageChanged: (index) => setState(() => _currentIndex = index),
-          children: _screens,
-        ),
-        bottomNavigationBar: CustomBottomNavBar(
-          currentIndex: _currentIndex,
-          onTabChanged: _onTabChanged,
-          onFabPressed: () async {
-            final controller = context.read<TaskController>();
-            await Navigator.pushNamed(context, AppRoutes.addTask);
-            if (mounted) {
-              controller.loadTasks();
+      child: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) async {
+          if (didPop) return;
+          if (_currentIndex != 0) {
+            _onTabChanged(0);
+          } else {
+            // Minimize to background (like pressing the home button)
+            const platform = MethodChannel('com.quicklist/navigation');
+            try {
+              await platform.invokeMethod('moveToBackground');
+            } catch (_) {
+              // Fallback: move task to back via system navigator
+              SystemNavigator.pop();
             }
-          },
+          }
+        },
+        child: Scaffold(
+          body: PageView(
+            controller: _pageController,
+            physics: const NeverScrollableScrollPhysics(),
+            onPageChanged: (index) => setState(() => _currentIndex = index),
+            children: _screens,
+          ),
+          bottomNavigationBar: CustomBottomNavBar(
+            currentIndex: _currentIndex,
+            onTabChanged: _onTabChanged,
+            onFabPressed: () async {
+              final controller = context.read<TaskController>();
+              await Navigator.pushNamed(context, AppRoutes.addTask);
+              if (mounted) {
+                controller.loadTasks();
+              }
+            },
+          ),
         ),
       ),
     );
