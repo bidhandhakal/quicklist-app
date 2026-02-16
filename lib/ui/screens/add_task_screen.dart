@@ -1,18 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../controllers/task_controller.dart';
 import '../../models/task_model.dart';
-import '../../data/dummy_categories.dart';
+import '../../services/category_service.dart';
 import '../../utils/constants.dart';
 import '../../utils/validators.dart';
 import '../../utils/size_config.dart';
-import '../widgets/banner_ad_widget.dart';
 
 class AddTaskScreen extends StatefulWidget {
   final String? taskId;
 
   const AddTaskScreen({super.key, this.taskId});
+
+  /// Show the add/edit task bottom sheet.
+  /// Pass [taskId] to edit an existing task.
+  static Future<void> show(BuildContext context, {String? taskId}) {
+    return showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) => ChangeNotifierProvider.value(
+        value: context.read<TaskController>(),
+        child: AddTaskScreen(taskId: taskId),
+      ),
+    );
+  }
 
   @override
   State<AddTaskScreen> createState() => _AddTaskScreenState();
@@ -71,224 +87,476 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: Text(_isEditing ? 'Edit Task' : 'Add Task'),
-        actions: [
-          if (_isEditing)
-            IconButton(icon: const Icon(Icons.delete), onPressed: _deleteTask),
-        ],
+
+    final inputDecoration = InputDecoration(
+      filled: true,
+      fillColor: AppColors.surfaceSecondary,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(context.rw(12)),
+        borderSide: BorderSide.none,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Form(
-              key: _formKey,
-              child: ListView(
-                padding: EdgeInsets.all(context.rw(16)),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(context.rw(12)),
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(context.rw(12)),
+        borderSide: BorderSide(color: AppColors.darkAccent, width: 1.5),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(context.rw(12)),
+        borderSide: BorderSide(color: AppColors.error, width: 1.5),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(context.rw(12)),
+        borderSide: BorderSide(color: AppColors.error, width: 1.5),
+      ),
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: context.rw(14),
+        vertical: context.rh(14),
+      ),
+      hintStyle: GoogleFonts.manrope(
+        fontSize: context.rf(14),
+        fontWeight: FontWeight.w500,
+        color: AppColors.onSurfaceSecondary.withValues(alpha: 0.7),
+      ),
+      labelStyle: GoogleFonts.manrope(
+        fontSize: context.rf(14),
+        fontWeight: FontWeight.w500,
+        color: AppColors.onSurfaceSecondary,
+      ),
+      errorStyle: GoogleFonts.manrope(
+        fontSize: context.rf(11),
+        fontWeight: FontWeight.w500,
+        color: AppColors.error,
+      ),
+    );
+
+    return Padding(
+      padding: EdgeInsets.only(
+        left: context.rw(20),
+        right: context.rw(20),
+        top: context.rh(12),
+        bottom: MediaQuery.of(context).viewInsets.bottom + context.rh(16),
+      ),
+      child: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Handle bar
+              Center(
+                child: Container(
+                  width: context.rw(40),
+                  height: context.rh(4),
+                  decoration: BoxDecoration(
+                    color: AppColors.onSurfaceSecondary.withValues(alpha: 0.3),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              SizedBox(height: context.rh(14)),
+
+              // Header row
+              Row(
                 children: [
-                  // Title field
-                  TextFormField(
-                    controller: _titleController,
-                    decoration: const InputDecoration(
-                      labelText: 'Task Title *',
-                      hintText: 'Enter task title',
-                      prefixIcon: Icon(Icons.title),
+                  Expanded(
+                    child: Text(
+                      _isEditing ? 'Edit Task' : 'New Task',
+                      style: GoogleFonts.manrope(
+                        fontSize: context.rf(22),
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.onSurface,
+                      ),
                     ),
-                    validator: Validators.validateTaskTitle,
-                    textCapitalization: TextCapitalization.sentences,
-                    autofocus: !_isEditing,
                   ),
-                  SizedBox(height: context.rh(16)),
-
-                  // Description field
-                  TextFormField(
-                    controller: _descriptionController,
-                    decoration: const InputDecoration(
-                      labelText: 'Description',
-                      hintText: 'Enter task description (optional)',
-                      prefixIcon: Icon(Icons.description),
+                  if (_isEditing)
+                    GestureDetector(
+                      onTap: _deleteTask,
+                      child: Container(
+                        width: context.rw(38),
+                        height: context.rw(38),
+                        decoration: BoxDecoration(
+                          color: AppColors.error.withValues(alpha: 0.08),
+                          borderRadius: BorderRadius.circular(context.rw(10)),
+                        ),
+                        child: Icon(
+                          Icons.delete_rounded,
+                          size: context.rw(18),
+                          color: AppColors.error,
+                        ),
+                      ),
                     ),
-                    validator: Validators.validateTaskDescription,
-                    textCapitalization: TextCapitalization.sentences,
-                    maxLines: 3,
-                  ),
-                  SizedBox(height: context.rh(24)),
+                ],
+              ),
+              SizedBox(height: context.rh(18)),
 
-                  // Category selector
-                  Text(
-                    'Category',
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                  SizedBox(height: context.rh(12)),
-                  Wrap(
-                    spacing: context.rw(8),
-                    runSpacing: context.rh(8),
-                    children: DummyCategories.categories.map((category) {
-                      final isSelected = _selectedCategoryId == category.id;
-                      return FilterChip(
-                        label: Row(
-                          mainAxisSize: MainAxisSize.min,
+              // Title field
+              _buildSectionLabel(context, 'Title'),
+              SizedBox(height: context.rh(6)),
+              TextFormField(
+                controller: _titleController,
+                style: GoogleFonts.manrope(
+                  fontSize: context.rf(15),
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.onSurface,
+                ),
+                decoration: inputDecoration.copyWith(
+                  hintText: 'What do you need to do?',
+                ),
+                validator: Validators.validateTaskTitle,
+                textCapitalization: TextCapitalization.sentences,
+                autofocus: !_isEditing,
+              ),
+              SizedBox(height: context.rh(16)),
+
+              // Description field
+              _buildSectionLabel(context, 'Description (Optional)'),
+              SizedBox(height: context.rh(6)),
+              TextFormField(
+                controller: _descriptionController,
+                style: GoogleFonts.manrope(
+                  fontSize: context.rf(15),
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.onSurface,
+                ),
+                decoration: inputDecoration.copyWith(
+                  hintText: 'Add some details...',
+                ),
+                validator: Validators.validateTaskDescription,
+                textCapitalization: TextCapitalization.sentences,
+                maxLines: 3,
+              ),
+              SizedBox(height: context.rh(18)),
+
+              // Category selector
+              _buildSectionLabel(context, 'Category'),
+              SizedBox(height: context.rh(8)),
+              Wrap(
+                spacing: context.rw(8),
+                runSpacing: context.rh(8),
+                children: CategoryService().getAllCategories().map((category) {
+                  final isSelected = _selectedCategoryId == category.id;
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _selectedCategoryId = isSelected ? null : category.id;
+                      });
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: context.rw(12),
+                        vertical: context.rh(7),
+                      ),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? category.color.withValues(alpha: 0.12)
+                            : AppColors.surfaceSecondary,
+                        borderRadius: BorderRadius.circular(context.rw(10)),
+                        border: Border.all(
+                          color: isSelected
+                              ? category.color
+                              : Colors.transparent,
+                          width: 1.5,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            category.icon,
+                            size: context.rw(15),
+                            color: isSelected
+                                ? category.color
+                                : AppColors.onSurfaceSecondary,
+                          ),
+                          SizedBox(width: context.rw(5)),
+                          Text(
+                            category.name,
+                            style: GoogleFonts.manrope(
+                              fontSize: context.rf(12),
+                              fontWeight: isSelected
+                                  ? FontWeight.w700
+                                  : FontWeight.w600,
+                              color: isSelected
+                                  ? category.color
+                                  : AppColors.onSurface,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+              SizedBox(height: context.rh(18)),
+
+              // Priority selector
+              _buildSectionLabel(context, 'Priority'),
+              SizedBox(height: context.rh(8)),
+              Row(
+                children: TaskPriority.values.map((priority) {
+                  final isSelected = _selectedPriority == priority;
+                  return Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: context.rw(3)),
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() => _selectedPriority = priority);
+                        },
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          padding: EdgeInsets.symmetric(
+                            vertical: context.rh(10),
+                          ),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? priority.color.withValues(alpha: 0.12)
+                                : AppColors.surfaceSecondary,
+                            borderRadius: BorderRadius.circular(context.rw(10)),
+                            border: Border.all(
+                              color: isSelected
+                                  ? priority.color
+                                  : Colors.transparent,
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              Icon(
+                                isSelected
+                                    ? Icons.check_circle_rounded
+                                    : Icons.circle_outlined,
+                                size: context.rw(18),
+                                color: isSelected
+                                    ? priority.color
+                                    : AppColors.onSurfaceSecondary,
+                              ),
+                              SizedBox(height: context.rh(4)),
+                              Text(
+                                priority.displayName,
+                                style: GoogleFonts.manrope(
+                                  fontSize: context.rf(11),
+                                  fontWeight: isSelected
+                                      ? FontWeight.w700
+                                      : FontWeight.w600,
+                                  color: isSelected
+                                      ? priority.color
+                                      : AppColors.onSurfaceSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+              SizedBox(height: context.rh(18)),
+
+              // Deadline & Reminder row
+              Row(
+                children: [
+                  // Deadline
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: _selectDeadline,
+                      child: Container(
+                        padding: EdgeInsets.all(context.rw(12)),
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceSecondary,
+                          borderRadius: BorderRadius.circular(context.rw(12)),
+                        ),
+                        child: Row(
                           children: [
                             Icon(
-                              category.icon,
-                              size: context.rw(16),
-                              color: isSelected ? category.color : null,
+                              Icons.calendar_today_rounded,
+                              size: context.rw(18),
+                              color: _selectedDeadline != null
+                                  ? AppColors.onSurface
+                                  : AppColors.onSurfaceSecondary,
                             ),
-                            SizedBox(width: context.rw(4)),
-                            Text(category.name),
-                          ],
-                        ),
-                        selected: isSelected,
-                        selectedColor: category.color.withValues(alpha: 0.2),
-                        onSelected: (selected) {
-                          setState(() {
-                            _selectedCategoryId = selected ? category.id : null;
-                          });
-                        },
-                      );
-                    }).toList(),
-                  ),
-                  SizedBox(height: context.rh(24)),
-
-                  // Priority selector
-                  Text(
-                    'Priority',
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                  SizedBox(height: context.rh(12)),
-                  Row(
-                    children: TaskPriority.values.map((priority) {
-                      final isSelected = _selectedPriority == priority;
-                      return Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: context.rw(4),
-                          ),
-                          child: ChoiceChip(
-                            label: SizedBox(
-                              width: double.infinity,
+                            SizedBox(width: context.rw(8)),
+                            Expanded(
                               child: Text(
-                                priority.displayName,
-                                textAlign: TextAlign.center,
+                                _selectedDeadline != null
+                                    ? '${_selectedDeadline!.day}/${_selectedDeadline!.month}/${_selectedDeadline!.year}'
+                                    : 'Deadline',
+                                style: GoogleFonts.manrope(
+                                  fontSize: context.rf(12),
+                                  fontWeight: FontWeight.w600,
+                                  color: _selectedDeadline != null
+                                      ? AppColors.onSurface
+                                      : AppColors.onSurfaceSecondary,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            selected: isSelected,
-                            selectedColor: priority.color.withValues(
-                              alpha: 0.2,
-                            ),
-                            onSelected: (selected) {
-                              setState(() {
-                                _selectedPriority = priority;
-                              });
-                            },
-                            avatar: isSelected
-                                ? Icon(
-                                    Icons.check,
-                                    size: context.rw(16),
-                                    color: priority.color,
-                                  )
-                                : null,
-                          ),
+                            if (_selectedDeadline != null)
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _selectedDeadline = null;
+                                    _selectedDeadlineTime = null;
+                                  });
+                                },
+                                child: Icon(
+                                  Icons.close_rounded,
+                                  size: context.rw(16),
+                                  color: AppColors.onSurfaceSecondary,
+                                ),
+                              ),
+                          ],
                         ),
-                      );
-                    }).toList(),
-                  ),
-                  SizedBox(height: context.rh(24)),
-
-                  // Deadline selector
-                  Text(
-                    'Deadline',
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                  SizedBox(height: context.rh(12)),
-                  ListTile(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(context.rw(12)),
-                      side: BorderSide(
-                        color: Theme.of(context).colorScheme.outline,
                       ),
                     ),
-                    leading: const Icon(Icons.calendar_today),
-                    title: Text(
-                      _selectedDeadline != null
-                          ? '${_selectedDeadline!.day}/${_selectedDeadline!.month}/${_selectedDeadline!.year}'
-                          : 'No deadline set',
-                    ),
-                    subtitle: _selectedDeadlineTime != null
-                        ? Text(_selectedDeadlineTime!.format(context))
-                        : null,
-                    trailing: _selectedDeadline != null
-                        ? IconButton(
-                            icon: const Icon(Icons.clear),
-                            onPressed: () {
-                              setState(() {
-                                _selectedDeadline = null;
-                                _selectedDeadlineTime = null;
-                              });
-                            },
-                          )
-                        : const Icon(Icons.chevron_right),
-                    onTap: _selectDeadline,
                   ),
-                  SizedBox(height: context.rh(24)),
-
+                  SizedBox(width: context.rw(10)),
                   // Reminder toggle
-                  SwitchListTile(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(context.rw(12)),
-                      side: BorderSide(
-                        color: Theme.of(context).colorScheme.outline,
-                      ),
-                    ),
-                    title: const Text('Set Reminder'),
-                    subtitle: _reminderDateTime != null
-                        ? Text(
-                            '${_reminderDateTime!.day}/${_reminderDateTime!.month}/${_reminderDateTime!.year} at ${TimeOfDay.fromDateTime(_reminderDateTime!).format(context)}',
-                          )
-                        : const Text('Get notified about this task'),
-                    value: _reminderEnabled,
-                    onChanged: (value) {
+                  GestureDetector(
+                    onTap: () {
                       setState(() {
-                        _reminderEnabled = value;
-                        if (value && _reminderDateTime == null) {
+                        _reminderEnabled = !_reminderEnabled;
+                        if (_reminderEnabled && _reminderDateTime == null) {
                           _selectReminderDateTime();
                         }
                       });
                     },
-                  ),
-
-                  if (_reminderEnabled) ...[
-                    SizedBox(height: context.rh(8)),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: context.rw(16)),
-                      child: TextButton.icon(
-                        onPressed: _selectReminderDateTime,
-                        icon: const Icon(Icons.edit),
-                        label: const Text('Change Reminder Time'),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: EdgeInsets.all(context.rw(12)),
+                      decoration: BoxDecoration(
+                        color: _reminderEnabled
+                            ? AppColors.darkAccent.withValues(alpha: 0.1)
+                            : AppColors.surfaceSecondary,
+                        borderRadius: BorderRadius.circular(context.rw(12)),
+                        border: Border.all(
+                          color: _reminderEnabled
+                              ? AppColors.darkAccent
+                              : Colors.transparent,
+                          width: 1.5,
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            _reminderEnabled
+                                ? Icons.notifications_active_rounded
+                                : Icons.notifications_none_rounded,
+                            size: context.rw(18),
+                            color: _reminderEnabled
+                                ? AppColors.darkAccent
+                                : AppColors.onSurfaceSecondary,
+                          ),
+                          SizedBox(width: context.rw(6)),
+                          Text(
+                            'Remind',
+                            style: GoogleFonts.manrope(
+                              fontSize: context.rf(12),
+                              fontWeight: FontWeight.w600,
+                              color: _reminderEnabled
+                                  ? AppColors.darkAccent
+                                  : AppColors.onSurfaceSecondary,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-
-                  SizedBox(height: context.rh(32)),
-
-                  // Save button
-                  FilledButton(
-                    onPressed: _saveTask,
-                    style: FilledButton.styleFrom(
-                      padding: EdgeInsets.all(context.rw(16)),
-                    ),
-                    child: Text(_isEditing ? 'Update Task' : 'Add Task'),
                   ),
                 ],
               ),
-            ),
-          ),
 
-          // Banner Ad at bottom
-          const BannerAdWidget(screenId: 'add_task_screen'),
-        ],
+              if (_reminderEnabled && _reminderDateTime != null) ...[
+                SizedBox(height: context.rh(6)),
+                GestureDetector(
+                  onTap: _selectReminderDateTime,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: context.rw(4)),
+                    child: Text(
+                      '${_reminderDateTime!.day}/${_reminderDateTime!.month}/${_reminderDateTime!.year} at ${TimeOfDay.fromDateTime(_reminderDateTime!).format(context)}',
+                      style: GoogleFonts.manrope(
+                        fontSize: context.rf(11),
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.onSurfaceSecondary,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+
+              SizedBox(height: context.rh(22)),
+
+              // Action buttons
+              Row(
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: context.rh(14)),
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceSecondary,
+                          borderRadius: BorderRadius.circular(context.rw(12)),
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Cancel',
+                            style: GoogleFonts.manrope(
+                              fontSize: context.rf(15),
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.onSurfaceSecondary,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: context.rw(12)),
+                  Expanded(
+                    flex: 2,
+                    child: GestureDetector(
+                      onTap: _saveTask,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: context.rh(14)),
+                        decoration: BoxDecoration(
+                          color: AppColors.darkAccent,
+                          borderRadius: BorderRadius.circular(context.rw(12)),
+                        ),
+                        child: Center(
+                          child: Text(
+                            _isEditing ? 'Update Task' : 'Add Task',
+                            style: GoogleFonts.manrope(
+                              fontSize: context.rf(15),
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionLabel(BuildContext context, String label) {
+    return Text(
+      label,
+      style: GoogleFonts.manrope(
+        fontSize: context.rf(13),
+        fontWeight: FontWeight.w700,
+        color: AppColors.onSurface.withValues(alpha: 0.7),
       ),
     );
   }

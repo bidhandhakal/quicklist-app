@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../models/task_model.dart';
 import '../../controllers/task_controller.dart';
-import '../../data/dummy_categories.dart';
+import '../../services/category_service.dart';
 import '../../utils/helpers.dart';
 import '../../utils/constants.dart';
 import '../../utils/size_config.dart';
@@ -18,7 +18,9 @@ class TaskTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final taskController = Provider.of<TaskController>(context, listen: false);
-    final category = DummyCategories.getCategoryByIdOrNull(task.categoryId);
+    final category = task.categoryId != null
+        ? CategoryService().getCategoryById(task.categoryId!)
+        : null;
     final priority = TaskPriority.values[task.priority];
 
     return Dismissible(
@@ -71,12 +73,12 @@ class TaskTile extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: task.isCompleted
-                          ? AppColors.primary
+                          ? AppColors.iconDefault
                           : AppColors.onSurfaceSecondary.withValues(alpha: 0.4),
                       width: 2,
                     ),
                     color: task.isCompleted
-                        ? AppColors.primary
+                        ? AppColors.iconDefault
                         : Colors.transparent,
                   ),
                   child: task.isCompleted
@@ -240,13 +242,13 @@ class TaskTile extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
         color: isLeft
-            ? AppColors.primary.withValues(alpha: 0.2)
+            ? AppColors.iconDefault.withValues(alpha: 0.2)
             : AppColors.error.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Icon(
         isLeft ? Icons.check_circle_rounded : Icons.delete_rounded,
-        color: isLeft ? AppColors.primary : AppColors.error,
+        color: isLeft ? AppColors.iconDefault : AppColors.error,
         size: 28,
       ),
     );

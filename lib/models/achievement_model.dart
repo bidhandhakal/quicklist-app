@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 
 part 'achievement_model.g.dart';
 
-@HiveType(typeId: 4)
+@HiveType(typeId: 8)
 class Achievement extends HiveObject {
   @HiveField(0)
   final String id;

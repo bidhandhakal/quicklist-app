@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../../services/gamification_service.dart';
 import '../../services/ad_service.dart';
@@ -67,35 +67,52 @@ class _GamificationScreenState extends State<GamificationScreen>
   @override
   Widget build(BuildContext context) {
     SizeConfig.init(context);
-    final theme = Theme.of(context);
     final gamificationService = GamificationService.instance;
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: const Text('Achievements & Stats'),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: 'Overview'),
-            Tab(text: 'Achievements'),
-            Tab(text: 'Statistics'),
-          ],
+      body: SafeArea(
+        child: ListenableBuilder(
+          listenable: gamificationService,
+          builder: (context, _) {
+            return Column(
+              children: [
+                // Scrollable header area
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: context.rw(16),
+                    vertical: context.rh(8),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildHeader(context),
+                      SizedBox(height: context.rh(20)),
+                      _buildTabs(context),
+                    ],
+                  ),
+                ),
+                SizedBox(height: context.rh(8)),
+                // Tab content
+                Expanded(
+                  child: AnimatedBuilder(
+                    animation: _tabController,
+                    builder: (context, _) {
+                      return IndexedStack(
+                        index: _tabController.index,
+                        children: [
+                          _buildOverviewTab(gamificationService),
+                          _buildAchievementsTab(gamificationService),
+                          _buildStatisticsTab(gamificationService),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          },
         ),
-        automaticallyImplyLeading: false,
-      ),
-      body: ListenableBuilder(
-        listenable: gamificationService,
-        builder: (context, _) {
-          return TabBarView(
-            controller: _tabController,
-            children: [
-              _buildOverviewTab(gamificationService, theme),
-              _buildAchievementsTab(gamificationService, theme),
-              _buildStatisticsTab(gamificationService, theme),
-            ],
-          );
-        },
       ),
       bottomNavigationBar: (_isBannerAdLoaded && _bannerAd != null)
           ? Container(
@@ -108,17 +125,125 @@ class _GamificationScreenState extends State<GamificationScreen>
     );
   }
 
-  Widget _buildOverviewTab(GamificationService service, ThemeData theme) {
+  Widget _buildHeader(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Achievements',
+                style: GoogleFonts.manrope(
+                  color: AppColors.onSurface,
+                  fontSize: context.rf(26),
+                  fontWeight: FontWeight.w800,
+                  height: 1.1,
+                ),
+              ),
+              SizedBox(height: context.rh(2)),
+              Text(
+                'Track your progress',
+                style: GoogleFonts.manrope(
+                  color: AppColors.onSurfaceSecondary,
+                  fontSize: context.rf(14),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTabs(BuildContext context) {
+    return Container(
+      height: context.rh(42),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceSecondary,
+        borderRadius: BorderRadius.circular(context.rw(12)),
+      ),
+      padding: EdgeInsets.all(context.rw(4)),
+      child: TabBar(
+        controller: _tabController,
+        indicator: BoxDecoration(
+          color: AppColors.darkAccent,
+          borderRadius: BorderRadius.circular(context.rw(10)),
+        ),
+        indicatorSize: TabBarIndicatorSize.tab,
+        dividerColor: Colors.transparent,
+        labelColor: Colors.white,
+        unselectedLabelColor: AppColors.onSurfaceSecondary,
+        labelStyle: GoogleFonts.manrope(
+          fontWeight: FontWeight.w700,
+          fontSize: context.rf(12),
+        ),
+        unselectedLabelStyle: GoogleFonts.manrope(
+          fontWeight: FontWeight.w600,
+          fontSize: context.rf(12),
+        ),
+        tabs: [
+          Tab(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.dashboard_rounded, size: context.rw(14)),
+                SizedBox(width: context.rw(5)),
+                const Text('Overview'),
+              ],
+            ),
+          ),
+          Tab(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.emoji_events_rounded, size: context.rw(14)),
+                SizedBox(width: context.rw(5)),
+                const Text('Badges'),
+              ],
+            ),
+          ),
+          Tab(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.bar_chart_rounded, size: context.rw(14)),
+                SizedBox(width: context.rw(5)),
+                const Text('Stats'),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOverviewTab(GamificationService service) {
     final dailyGoal = service.dailyGoal;
     final streak = service.streak;
     final unlockedCount = service.unlockedAchievements.length;
     final totalCount = service.achievements.length;
 
     return SingleChildScrollView(
-      padding: EdgeInsets.all(context.rw(16)),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.rw(16),
+        vertical: context.rh(8),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Section title
+          Text(
+            'Daily Progress',
+            style: GoogleFonts.manrope(
+              fontSize: context.rf(18),
+              fontWeight: FontWeight.w700,
+              color: AppColors.onSurface,
+            ),
+          ),
+          SizedBox(height: context.rh(12)),
+
           // Daily Goal Card
           Container(
             padding: EdgeInsets.all(context.rw(16)),
@@ -140,61 +265,83 @@ class _GamificationScreenState extends State<GamificationScreen>
               children: [
                 Row(
                   children: [
-                    Icon(
-                      dailyGoal.isTodayGoalAchieved
-                          ? Icons.emoji_events
-                          : Icons.flag_rounded,
-                      color: dailyGoal.isTodayGoalAchieved
-                          ? Colors.amber
-                          : theme.colorScheme.primary,
-                      size: context.rw(22),
+                    Container(
+                      width: context.rw(40),
+                      height: context.rw(40),
+                      decoration: BoxDecoration(
+                        color:
+                            (dailyGoal.isTodayGoalAchieved
+                                    ? Colors.amber
+                                    : AppColors.iconDefault)
+                                .withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        dailyGoal.isTodayGoalAchieved
+                            ? Icons.emoji_events
+                            : Icons.flag_rounded,
+                        color: dailyGoal.isTodayGoalAchieved
+                            ? Colors.amber.shade700
+                            : AppColors.iconDefault,
+                        size: context.rw(20),
+                      ),
                     ),
-                    SizedBox(width: context.rw(10)),
+                    SizedBox(width: context.rw(12)),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             'Today\'s Goal',
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
+                            style: GoogleFonts.manrope(
+                              fontSize: context.rf(15),
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.onSurface,
                             ),
                           ),
+                          SizedBox(height: context.rh(2)),
                           Text(
                             '${dailyGoal.todayCompleted} / ${dailyGoal.targetTasks} tasks',
-                            style: theme.textTheme.bodyMedium?.copyWith(
+                            style: GoogleFonts.manrope(
+                              fontSize: context.rf(13),
+                              fontWeight: FontWeight.w600,
                               color: dailyGoal.isTodayGoalAchieved
                                   ? Colors.amber.shade700
-                                  : theme.colorScheme.primary,
-                              fontWeight: FontWeight.w600,
+                                  : AppColors.onSurfaceSecondary,
                             ),
                           ),
                         ],
                       ),
                     ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.edit_outlined,
-                        color: dailyGoal.isTodayGoalAchieved
-                            ? Colors.amber.shade700
-                            : theme.colorScheme.primary,
+                    GestureDetector(
+                      onTap: _showEditGoalDialog,
+                      child: Container(
+                        width: context.rw(34),
+                        height: context.rw(34),
+                        decoration: BoxDecoration(
+                          color: AppColors.surfaceSecondary,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.edit_outlined,
+                          color: AppColors.onSurfaceSecondary,
+                          size: context.rw(16),
+                        ),
                       ),
-                      onPressed: () => _showEditGoalDialog(),
-                      tooltip: 'Edit goal',
                     ),
                   ],
                 ),
-                SizedBox(height: context.rh(12)),
+                SizedBox(height: context.rh(14)),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(context.rw(8)),
                   child: LinearProgressIndicator(
                     value: dailyGoal.todayProgress,
                     minHeight: context.rh(8),
-                    backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                    backgroundColor: AppColors.surfaceSecondary,
                     valueColor: AlwaysStoppedAnimation<Color>(
                       dailyGoal.isTodayGoalAchieved
                           ? Colors.amber
-                          : theme.colorScheme.primary,
+                          : AppColors.primary,
                     ),
                   ),
                 ),
@@ -221,48 +368,87 @@ class _GamificationScreenState extends State<GamificationScreen>
             ),
             child: Row(
               children: [
-                Text('🔥', style: TextStyle(fontSize: context.rf(26))),
-                SizedBox(width: context.rw(10)),
+                Container(
+                  width: context.rw(40),
+                  height: context.rw(40),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Text(
+                      '🔥',
+                      style: TextStyle(fontSize: context.rf(20)),
+                    ),
+                  ),
+                ),
+                SizedBox(width: context.rw(12)),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'Current Streak',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
+                        style: GoogleFonts.manrope(
+                          fontSize: context.rf(15),
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.onSurface,
                         ),
                       ),
-                      SizedBox(height: context.rh(4)),
+                      SizedBox(height: context.rh(2)),
                       Text(
                         '${streak.currentStreak} ${streak.currentStreak == 1 ? 'day' : 'days'}',
-                        style: theme.textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
+                        style: GoogleFonts.manrope(
+                          fontSize: context.rf(22),
+                          fontWeight: FontWeight.w800,
                           color: streak.currentStreak > 0
                               ? Colors.orange.shade700
-                              : Colors.grey,
-                        ),
-                      ),
-                      Text(
-                        'Longest: ${streak.longestStreak} ${streak.longestStreak == 1 ? 'day' : 'days'}',
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: streak.currentStreak > 0
-                              ? Colors.orange.shade900
-                              : Colors.grey.shade600,
+                              : AppColors.onSurfaceSecondary,
                         ),
                       ),
                     ],
                   ),
                 ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      'Best',
+                      style: GoogleFonts.manrope(
+                        fontSize: context.rf(11),
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.onSurfaceSecondary,
+                      ),
+                    ),
+                    Text(
+                      '${streak.longestStreak}d',
+                      style: GoogleFonts.manrope(
+                        fontSize: context.rf(16),
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.onSurface,
+                      ),
+                    ),
+                  ],
+                ),
               ],
+            ),
+          ),
+          SizedBox(height: context.rh(16)),
+
+          // Native Ad
+          const NativeAdWidget(screenId: 'gamification_screen_top'),
+
+          // Achievements Summary
+          Text(
+            'Achievements',
+            style: GoogleFonts.manrope(
+              fontSize: context.rf(18),
+              fontWeight: FontWeight.w700,
+              color: AppColors.onSurface,
             ),
           ),
           SizedBox(height: context.rh(12)),
 
-          // Native Ad (AdMob Compliant)
-          const NativeAdWidget(screenId: 'gamification_screen_top'),
-
-          // Achievements Summary
           Container(
             padding: EdgeInsets.all(context.rw(16)),
             decoration: BoxDecoration(
@@ -283,27 +469,39 @@ class _GamificationScreenState extends State<GamificationScreen>
               children: [
                 Row(
                   children: [
-                    Icon(
-                      Icons.stars,
-                      color: theme.colorScheme.primary,
-                      size: context.rw(22),
+                    Container(
+                      width: context.rw(40),
+                      height: context.rw(40),
+                      decoration: BoxDecoration(
+                        color: AppColors.iconDefault.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.stars,
+                        color: AppColors.iconDefault,
+                        size: context.rw(20),
+                      ),
                     ),
-                    SizedBox(width: context.rw(10)),
+                    SizedBox(width: context.rw(12)),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Achievements',
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
+                            'Progress',
+                            style: GoogleFonts.manrope(
+                              fontSize: context.rf(15),
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.onSurface,
                             ),
                           ),
+                          SizedBox(height: context.rh(2)),
                           Text(
                             '$unlockedCount / $totalCount unlocked',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.primary,
+                            style: GoogleFonts.manrope(
+                              fontSize: context.rf(13),
                               fontWeight: FontWeight.w600,
+                              color: AppColors.onSurfaceSecondary,
                             ),
                           ),
                         ],
@@ -311,13 +509,13 @@ class _GamificationScreenState extends State<GamificationScreen>
                     ),
                   ],
                 ),
-                SizedBox(height: context.rh(12)),
+                SizedBox(height: context.rh(14)),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(context.rw(8)),
                   child: LinearProgressIndicator(
                     value: totalCount > 0 ? unlockedCount / totalCount : 0,
                     minHeight: context.rh(8),
-                    backgroundColor: theme.colorScheme.surfaceContainerHighest,
+                    backgroundColor: AppColors.surfaceSecondary,
                   ),
                 ),
               ],
@@ -328,7 +526,7 @@ class _GamificationScreenState extends State<GamificationScreen>
     );
   }
 
-  Widget _buildAchievementsTab(GamificationService service, ThemeData theme) {
+  Widget _buildAchievementsTab(GamificationService service) {
     final achievements = service.achievements;
     var filteredAchievements = achievements;
 
@@ -371,34 +569,24 @@ class _GamificationScreenState extends State<GamificationScreen>
         Container(
           padding: EdgeInsets.symmetric(
             horizontal: context.rw(16),
-            vertical: context.rh(12),
+            vertical: context.rh(8),
           ),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                FilterChip(
-                  label: const Text('All'),
-                  selected: _achievementFilter == 'all',
-                  onSelected: (_) => setState(() => _achievementFilter = 'all'),
+                _buildFilterChip('All', 'all', count: achievements.length),
+                SizedBox(width: context.rw(8)),
+                _buildFilterChip(
+                  'Unlocked',
+                  'unlocked',
+                  count: achievements.where((a) => a.isUnlocked).length,
                 ),
                 SizedBox(width: context.rw(8)),
-                FilterChip(
-                  label: Text(
-                    'Unlocked (${achievements.where((a) => a.isUnlocked).length})',
-                  ),
-                  selected: _achievementFilter == 'unlocked',
-                  onSelected: (_) =>
-                      setState(() => _achievementFilter = 'unlocked'),
-                ),
-                SizedBox(width: context.rw(8)),
-                FilterChip(
-                  label: Text(
-                    'Locked (${achievements.where((a) => !a.isUnlocked).length})',
-                  ),
-                  selected: _achievementFilter == 'locked',
-                  onSelected: (_) =>
-                      setState(() => _achievementFilter = 'locked'),
+                _buildFilterChip(
+                  'Locked',
+                  'locked',
+                  count: achievements.where((a) => !a.isUnlocked).length,
                 ),
               ],
             ),
@@ -414,21 +602,25 @@ class _GamificationScreenState extends State<GamificationScreen>
                 children: [
                   Icon(
                     Icons.emoji_events_outlined,
-                    size: context.rw(60),
-                    color: Colors.grey.shade300,
+                    size: context.rw(48),
+                    color: AppColors.onSurfaceSecondary,
                   ),
-                  SizedBox(height: context.rh(16)),
+                  SizedBox(height: context.rh(12)),
                   Text(
                     'No achievements found',
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      color: Colors.grey.shade600,
+                    style: GoogleFonts.manrope(
+                      fontSize: context.rf(16),
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.onSurfaceSecondary,
                     ),
                   ),
-                  SizedBox(height: context.rh(8)),
+                  SizedBox(height: context.rh(4)),
                   Text(
                     'Complete tasks to unlock achievements!',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey.shade500,
+                    style: GoogleFonts.manrope(
+                      fontSize: context.rf(13),
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.onSurfaceSecondary,
                     ),
                   ),
                 ],
@@ -438,43 +630,52 @@ class _GamificationScreenState extends State<GamificationScreen>
         else
           Expanded(
             child: ListView(
-              padding: EdgeInsets.all(context.rw(16)),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.rw(16),
+                vertical: context.rh(8),
+              ),
               children: [
                 if (unlockedAchievements.isNotEmpty) ...[
                   Row(
                     children: [
                       Icon(
                         Icons.stars,
-                        color: theme.colorScheme.primary,
-                        size: context.rw(24),
+                        color: AppColors.onSurface,
+                        size: context.rw(20),
                       ),
                       SizedBox(width: context.rw(8)),
                       Text(
                         'Unlocked (${unlockedAchievements.length})',
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
+                        style: GoogleFonts.manrope(
+                          fontSize: context.rf(16),
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.onSurface,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: context.rh(12)),
                   ...groupedUnlocked.entries.map(
                     (entry) => Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 4, bottom: 8),
+                          padding: EdgeInsets.only(
+                            left: context.rw(4),
+                            bottom: context.rh(8),
+                          ),
                           child: Text(
                             _getCategoryName(entry.key),
-                            style: theme.textTheme.titleSmall?.copyWith(
-                              color: theme.colorScheme.primary,
-                              fontWeight: FontWeight.w600,
+                            style: GoogleFonts.manrope(
+                              fontSize: context.rf(12),
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.onSurfaceSecondary,
                             ),
                           ),
                         ),
                         ...entry.value.map(
                           (achievement) => Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
+                            padding: EdgeInsets.only(bottom: context.rh(10)),
                             child: AchievementCard(achievement: achievement),
                           ),
                         ),
@@ -482,44 +683,49 @@ class _GamificationScreenState extends State<GamificationScreen>
                       ],
                     ),
                   ),
-                  SizedBox(height: context.rh(16)),
+                  SizedBox(height: context.rh(12)),
                 ],
                 if (lockedAchievements.isNotEmpty) ...[
                   Row(
                     children: [
                       Icon(
                         Icons.lock_outline,
-                        color: Colors.grey.shade600,
-                        size: context.rw(24),
+                        color: AppColors.onSurfaceSecondary,
+                        size: context.rw(20),
                       ),
                       SizedBox(width: context.rw(8)),
                       Text(
                         'Locked (${lockedAchievements.length})',
-                        style: theme.textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.grey.shade600,
+                        style: GoogleFonts.manrope(
+                          fontSize: context.rf(16),
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.onSurfaceSecondary,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: context.rh(12)),
                   ...groupedLocked.entries.map(
                     (entry) => Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(left: 4, bottom: 8),
+                          padding: EdgeInsets.only(
+                            left: context.rw(4),
+                            bottom: context.rh(8),
+                          ),
                           child: Text(
                             _getCategoryName(entry.key),
-                            style: theme.textTheme.titleSmall?.copyWith(
-                              color: Colors.grey.shade600,
-                              fontWeight: FontWeight.w600,
+                            style: GoogleFonts.manrope(
+                              fontSize: context.rf(12),
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.onSurfaceSecondary,
                             ),
                           ),
                         ),
                         ...entry.value.map(
                           (achievement) => Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
+                            padding: EdgeInsets.only(bottom: context.rh(10)),
                             child: AchievementCard(
                               achievement: achievement,
                               showProgress: true,
@@ -533,7 +739,7 @@ class _GamificationScreenState extends State<GamificationScreen>
                             ),
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: context.rh(8)),
                       ],
                     ),
                   ),
@@ -545,7 +751,45 @@ class _GamificationScreenState extends State<GamificationScreen>
     );
   }
 
-  Widget _buildStatisticsTab(GamificationService service, ThemeData theme) {
+  Widget _buildFilterChip(
+    String label,
+    String filterValue, {
+    required int count,
+  }) {
+    final isSelected = _achievementFilter == filterValue;
+    return GestureDetector(
+      onTap: () => setState(() => _achievementFilter = filterValue),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250),
+        curve: Curves.easeOutCubic,
+        padding: EdgeInsets.symmetric(
+          horizontal: context.rw(14),
+          vertical: context.rh(8),
+        ),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.darkAccent : AppColors.surface,
+          borderRadius: BorderRadius.circular(context.rw(20)),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.cardShadow,
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Text(
+          filterValue == 'all' ? label : '$label ($count)',
+          style: GoogleFonts.manrope(
+            fontSize: context.rf(12),
+            fontWeight: FontWeight.w700,
+            color: isSelected ? Colors.white : AppColors.onSurfaceSecondary,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatisticsTab(GamificationService service) {
     final totalCompleted = service.totalTasksCompleted;
     final totalCreated = service.totalTasksCreated;
     final completionRate = totalCreated > 0
@@ -558,60 +802,66 @@ class _GamificationScreenState extends State<GamificationScreen>
         .length;
 
     return ListView(
-      padding: EdgeInsets.all(context.rw(16)),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.rw(16),
+        vertical: context.rh(8),
+      ),
       children: [
+        Text(
+          'Your Stats',
+          style: GoogleFonts.manrope(
+            fontSize: context.rf(18),
+            fontWeight: FontWeight.w700,
+            color: AppColors.onSurface,
+          ),
+        ),
+        SizedBox(height: context.rh(12)),
         _buildStatCard(
           icon: Icons.task_alt,
           title: 'Total Tasks Completed',
           value: totalCompleted.toString(),
-          color: Colors.green,
-          theme: theme,
+          color: AppColors.iconDefault,
         ),
-        SizedBox(height: context.rh(12)),
+        SizedBox(height: context.rh(10)),
         _buildStatCard(
           icon: Icons.add_task,
           title: 'Total Tasks Created',
           value: totalCreated.toString(),
-          color: Colors.blue,
-          theme: theme,
+          color: AppColors.iconDefault,
         ),
-        SizedBox(height: context.rh(12)),
+        SizedBox(height: context.rh(10)),
         _buildStatCard(
           icon: Icons.trending_up,
           title: 'Completion Rate',
           value: '$completionRate%',
-          color: Colors.purple,
-          theme: theme,
+          color: AppColors.iconDefault,
         ),
-        SizedBox(height: context.rh(12)),
+        SizedBox(height: context.rh(10)),
 
         // Native Ad
         const NativeAdWidget(screenId: 'gamification_screen_stats'),
-        SizedBox(height: context.rh(12)),
+        SizedBox(height: context.rh(10)),
 
         _buildStatCard(
           icon: Icons.emoji_events,
           title: 'Daily Goals Achieved',
           value: goalsAchieved.toString(),
-          color: Colors.amber,
-          theme: theme,
+          color: AppColors.iconDefault,
         ),
-        SizedBox(height: context.rh(12)),
+        SizedBox(height: context.rh(10)),
         _buildStatCard(
           icon: Icons.calendar_today,
           title: 'Perfect Weeks',
           value: perfectWeeks.toString(),
-          color: Colors.orange,
-          theme: theme,
+          color: AppColors.iconDefault,
         ),
-        SizedBox(height: context.rh(12)),
+        SizedBox(height: context.rh(10)),
         _buildStatCard(
           icon: Icons.stars,
           title: 'Achievements Unlocked',
           value:
               '${service.unlockedAchievements.length} / ${service.achievements.length}',
-          color: Colors.pink,
-          theme: theme,
+          color: AppColors.iconDefault,
         ),
       ],
     );
@@ -622,10 +872,19 @@ class _GamificationScreenState extends State<GamificationScreen>
     required String title,
     required String value,
     required Color color,
-    required ThemeData theme,
   }) {
-    return Card(
-      elevation: 2,
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(context.rw(AppColors.radiusMD)),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.cardShadow,
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Padding(
         padding: EdgeInsets.all(context.rw(16)),
         child: Row(
@@ -644,13 +903,21 @@ class _GamificationScreenState extends State<GamificationScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: theme.textTheme.bodyMedium),
+                  Text(
+                    title,
+                    style: GoogleFonts.manrope(
+                      fontSize: context.rf(13),
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.onSurfaceSecondary,
+                    ),
+                  ),
                   SizedBox(height: context.rh(4)),
                   Text(
                     value,
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: color,
+                    style: GoogleFonts.manrope(
+                      fontSize: context.rf(20),
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.onSurface,
                     ),
                   ),
                 ],

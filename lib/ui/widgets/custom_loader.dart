@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../utils/constants.dart';
+
 class CustomLoader extends StatefulWidget {
   final double size;
   final Color? color;
@@ -43,7 +45,7 @@ class _CustomLoaderState extends State<CustomLoader>
 
   @override
   Widget build(BuildContext context) {
-    final loaderColor = widget.color ?? Theme.of(context).primaryColor;
+    final loaderColor = widget.color ?? AppColors.iconDefault;
 
     return Center(
       child: AnimatedBuilder(
@@ -114,7 +116,7 @@ class _PulsingLoaderState extends State<PulsingLoader>
 
   @override
   Widget build(BuildContext context) {
-    final loaderColor = widget.color ?? Theme.of(context).colorScheme.primary;
+    final loaderColor = widget.color ?? AppColors.iconDefault;
 
     return Center(
       child: AnimatedBuilder(

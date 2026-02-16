@@ -22,6 +22,7 @@ class CategoryService {
     // Initialize with default categories if empty
     if (_categoryBox!.isEmpty) {
       await _initializeDefaultCategories();
+      _refreshCache();
     }
   }
 
@@ -32,56 +33,56 @@ class CategoryService {
       'work': Category(
         id: 'work',
         name: 'Work',
-        colorValue: const Color(0xFF6750A4).toARGB32(),
+        colorValue: const Color(0xFF1C1C1E).toARGB32(),
         iconCodePoint: Icons.work_rounded.codePoint,
         createdAt: now,
       ),
       'personal': Category(
         id: 'personal',
         name: 'Personal',
-        colorValue: const Color(0xFF0091EA).toARGB32(),
+        colorValue: const Color(0xFF636366).toARGB32(),
         iconCodePoint: Icons.person_rounded.codePoint,
         createdAt: now,
       ),
       'shopping': Category(
         id: 'shopping',
         name: 'Shopping',
-        colorValue: const Color(0xFF00C853).toARGB32(),
+        colorValue: const Color(0xFF34C759).toARGB32(),
         iconCodePoint: Icons.shopping_cart_rounded.codePoint,
         createdAt: now,
       ),
       'health': Category(
         id: 'health',
         name: 'Health',
-        colorValue: const Color(0xFFD32F2F).toARGB32(),
+        colorValue: const Color(0xFFFF3B30).toARGB32(),
         iconCodePoint: Icons.favorite_rounded.codePoint,
         createdAt: now,
       ),
       'home': Category(
         id: 'home',
         name: 'Home',
-        colorValue: const Color(0xFFFFAB00).toARGB32(),
+        colorValue: const Color(0xFFFF9F0A).toARGB32(),
         iconCodePoint: Icons.home_rounded.codePoint,
         createdAt: now,
       ),
       'learning': Category(
         id: 'learning',
         name: 'Learning',
-        colorValue: const Color(0xFF6200EA).toARGB32(),
+        colorValue: const Color(0xFF48484A).toARGB32(),
         iconCodePoint: Icons.school_rounded.codePoint,
         createdAt: now,
       ),
       'finance': Category(
         id: 'finance',
         name: 'Finance',
-        colorValue: const Color(0xFF00BFA5).toARGB32(),
+        colorValue: const Color(0xFF8E8E93).toARGB32(),
         iconCodePoint: Icons.account_balance_wallet_rounded.codePoint,
         createdAt: now,
       ),
       'other': Category(
         id: 'other',
         name: 'Other',
-        colorValue: const Color(0xFF78909C).toARGB32(),
+        colorValue: const Color(0xFFAEAEB2).toARGB32(),
         iconCodePoint: Icons.more_horiz_rounded.codePoint,
         createdAt: now,
       ),

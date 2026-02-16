@@ -38,7 +38,7 @@ class EmptyState extends StatelessWidget {
               child: Icon(
                 icon ?? Icons.check_circle_outline_rounded,
                 size: 40,
-                color: AppColors.onSurfaceSecondary,
+                color: AppColors.iconDefault,
               ),
             ),
             const SizedBox(height: 20),

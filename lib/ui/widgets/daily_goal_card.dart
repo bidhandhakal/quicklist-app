@@ -31,14 +31,14 @@ class DailyGoalCard extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Color(0xFF3A86FF), // Vibrant Blue
-              Color(0xFF0056D2), // Darker Blue
+              Color(0xFF2C2C2E), // Dark grey
+              Color(0xFF1C1C1E), // Near-black
             ],
           ),
           borderRadius: BorderRadius.circular(context.rw(20)),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF3A86FF).withValues(alpha: 0.3),
+              color: const Color(0xFF1C1C1E).withValues(alpha: 0.25),
               blurRadius: 10,
               offset: const Offset(0, 4),
               spreadRadius: 0,

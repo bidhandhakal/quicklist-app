@@ -8,7 +8,7 @@ part of 'achievement_model.dart';
 
 class AchievementAdapter extends TypeAdapter<Achievement> {
   @override
-  final int typeId = 4;
+  final int typeId = 8;
 
   @override
   Achievement read(BinaryReader reader) {

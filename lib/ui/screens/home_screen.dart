@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Added specific import
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -13,6 +12,7 @@ import '../widgets/daily_goal_card.dart';
 import '../widgets/streak_card.dart';
 import '../widgets/stat_card.dart';
 import '../widgets/native_ad_widget.dart';
+import 'add_task_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -212,16 +212,16 @@ class _HomeScreenState extends State<HomeScreen>
                         .toString(),
                     unit: '',
                     icon: Icons.calendar_today_rounded,
-                    iconColor: const Color(0xFF6C63FF),
+                    iconColor: AppColors.iconDefault,
                     onTap: () => _tabController.animateTo(0),
                     trailing: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _buildDot(context, Colors.redAccent),
+                        _buildDot(context, AppColors.onSurface),
                         SizedBox(height: context.rh(4)),
-                        _buildDot(context, Colors.blueAccent),
+                        _buildDot(context, AppColors.onSurfaceSecondary),
                         SizedBox(height: context.rh(4)),
-                        _buildDot(context, Colors.greenAccent),
+                        _buildDot(context, AppColors.outlineVariant),
                       ],
                     ),
                   ),
@@ -244,41 +244,61 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _buildTabs(BuildContext context) {
     return Container(
-      height: context.rh(38),
+      height: context.rh(42),
       decoration: BoxDecoration(
         color: AppColors.surfaceSecondary,
-        borderRadius: BorderRadius.circular(context.rw(10)),
+        borderRadius: BorderRadius.circular(context.rw(12)),
       ),
-      padding: EdgeInsets.all(context.rw(3)),
+      padding: EdgeInsets.all(context.rw(4)),
       child: TabBar(
         controller: _tabController,
         indicator: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(context.rw(8)),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.cardShadow,
-              blurRadius: 4,
-              offset: const Offset(0, 1),
-            ),
-          ],
+          color: AppColors.darkAccent,
+          borderRadius: BorderRadius.circular(context.rw(10)),
         ),
         indicatorSize: TabBarIndicatorSize.tab,
         dividerColor: Colors.transparent,
-        labelColor: AppColors.onSurface,
+        labelColor: Colors.white,
         unselectedLabelColor: AppColors.onSurfaceSecondary,
         labelStyle: GoogleFonts.manrope(
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w700,
           fontSize: context.rf(12),
         ),
         unselectedLabelStyle: GoogleFonts.manrope(
           fontWeight: FontWeight.w600,
           fontSize: context.rf(12),
         ),
-        tabs: const [
-          Tab(text: 'To do'),
-          Tab(text: 'Done'),
-          Tab(text: 'All'),
+        tabs: [
+          Tab(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.grid_view_rounded, size: context.rw(14)),
+                SizedBox(width: context.rw(5)),
+                const Text('To do'),
+              ],
+            ),
+          ),
+          Tab(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.check, size: context.rw(14)),
+                SizedBox(width: context.rw(5)),
+                const Text('Completed'),
+              ],
+            ),
+          ),
+          Tab(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.schedule, size: context.rw(14)),
+                SizedBox(width: context.rw(5)),
+                const Text('Pending'),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -291,13 +311,13 @@ class _HomeScreenState extends State<HomeScreen>
         int index = _tabController.index;
         bool active = index == 0;
         bool completed = index == 1;
-        bool all = index == 2;
+        bool pending = index == 2;
 
         return _buildTaskList(
           taskController,
           showActive: active,
           showCompleted: completed,
-          showAll: all,
+          showPending: pending,
         );
       },
     );
@@ -305,18 +325,20 @@ class _HomeScreenState extends State<HomeScreen>
 
   Widget _buildTaskList(
     TaskController taskController, {
-    bool showAll = false,
     bool showActive = false,
     bool showCompleted = false,
+    bool showPending = false,
   }) {
     List<dynamic> tasks;
 
-    if (showAll) {
-      tasks = taskController.tasks;
-    } else if (showActive) {
-      tasks = taskController.tasks.where((t) => !t.isCompleted).toList();
-    } else {
+    if (showCompleted) {
       tasks = taskController.tasks.where((t) => t.isCompleted).toList();
+    } else if (showPending) {
+      tasks = taskController.tasks
+          .where((t) => !t.isCompleted && t.deadline != null)
+          .toList();
+    } else {
+      tasks = taskController.tasks.where((t) => !t.isCompleted).toList();
     }
 
     if (tasks.isEmpty) {
@@ -328,7 +350,7 @@ class _HomeScreenState extends State<HomeScreen>
               Icon(
                 Icons.task_outlined,
                 size: context.rw(40),
-                color: AppColors.onSurfaceSecondary,
+                color: AppColors.iconDefault,
               ),
               SizedBox(height: context.rh(12)),
               Text(
@@ -380,11 +402,7 @@ class _HomeScreenState extends State<HomeScreen>
           child: TaskTile(
             task: task,
             onTap: () {
-              Navigator.pushNamed(
-                context,
-                AppRoutes.editTask,
-                arguments: task.id,
-              );
+              AddTaskScreen.show(context, taskId: task.id);
             },
           ),
         );

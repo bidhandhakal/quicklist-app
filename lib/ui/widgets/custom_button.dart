@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../utils/constants.dart';
+
 /// Customizable primary button with loading state
 class CustomButton extends StatelessWidget {
   final String text;
@@ -129,10 +131,9 @@ class CustomIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final bgColor =
-        backgroundColor ?? theme.primaryColor.withValues(alpha: 0.1);
-    final iColor = iconColor ?? theme.primaryColor;
+        backgroundColor ?? AppColors.iconDefault.withValues(alpha: 0.1);
+    final iColor = iconColor ?? AppColors.iconDefault;
 
     final button = Material(
       color: bgColor,

@@ -55,12 +55,12 @@ class AchievementCard extends StatelessWidget {
                     height: 44,
                     decoration: BoxDecoration(
                       color: isUnlocked
-                          ? theme.colorScheme.primary.withValues(alpha: 0.2)
+                          ? AppColors.iconDefault.withValues(alpha: 0.2)
                           : theme.colorScheme.surfaceContainerHighest,
                       shape: BoxShape.circle,
                       border: isUnlocked
                           ? Border.all(
-                              color: theme.colorScheme.primary.withValues(
+                              color: AppColors.iconDefault.withValues(
                                 alpha: 0.3,
                               ),
                               width: 2,
@@ -106,7 +106,7 @@ class AchievementCard extends StatelessWidget {
                                   vertical: 4,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: theme.colorScheme.primary.withValues(
+                                  color: AppColors.iconDefault.withValues(
                                     alpha: 0.2,
                                   ),
                                   borderRadius: BorderRadius.circular(12),
@@ -116,7 +116,7 @@ class AchievementCard extends StatelessWidget {
                                   children: [
                                     Icon(
                                       Icons.check_circle,
-                                      color: theme.colorScheme.primary,
+                                      color: AppColors.iconDefault,
                                       size: 14,
                                     ),
                                     const SizedBox(width: 4),
@@ -124,7 +124,7 @@ class AchievementCard extends StatelessWidget {
                                       'Unlocked',
                                       style: theme.textTheme.bodySmall
                                           ?.copyWith(
-                                            color: theme.colorScheme.primary,
+                                            color: AppColors.iconDefault,
                                             fontWeight: FontWeight.bold,
                                           ),
                                     ),
@@ -147,7 +147,7 @@ class AchievementCard extends StatelessWidget {
                           Text(
                             'Unlocked ${_formatDate(achievement.unlockedAt!)}',
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: theme.colorScheme.primary,
+                              color: AppColors.iconDefault,
                               fontStyle: FontStyle.italic,
                             ),
                           ),
@@ -160,7 +160,7 @@ class AchievementCard extends StatelessWidget {
                   if (!isUnlocked)
                     Icon(
                       Icons.lock_outline,
-                      color: AppColors.onSurfaceSecondary,
+                      color: AppColors.iconDefault,
                       size: 24,
                     ),
                 ],
@@ -188,7 +188,7 @@ class AchievementCard extends StatelessWidget {
                         Text(
                           '$currentProgress / $requiredProgress',
                           style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.primary,
+                            color: AppColors.iconDefault,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
