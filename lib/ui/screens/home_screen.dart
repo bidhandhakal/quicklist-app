@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/task_controller.dart';
 import '../../config/routes.dart';
 import '../../services/gamification_service.dart';
+import '../../utils/size_config.dart';
 import '../widgets/task_tile.dart';
 import '../widgets/daily_goal_card.dart';
 import '../widgets/streak_card.dart';
@@ -41,6 +42,9 @@ class _HomeScreenState extends State<HomeScreen>
 
   @override
   Widget build(BuildContext context) {
+    // Initialize SizeConfig
+    SizeConfig.init(context);
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
@@ -51,63 +55,67 @@ class _HomeScreenState extends State<HomeScreen>
       child: Scaffold(
         backgroundColor: const Color(0xFFF6F8FB), // Light greyish blue match
         body: SafeArea(
-        child: Consumer<TaskController>(
-          builder: (context, taskController, child) {
-            return SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24.0,
-                vertical: 12.0,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Custom Header
-                  _buildHeader(),
-                  const SizedBox(height: 28),
+          child: Consumer<TaskController>(
+            builder: (context, taskController, child) {
+              return SingleChildScrollView(
+                padding: EdgeInsets.symmetric(
+                  horizontal: context.rw(16),
+                  vertical: context.rh(8),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Custom Header
+                    _buildHeader(context),
+                    SizedBox(height: context.rh(20)),
 
-                  // Dashboard (2 Column Layout)
-                  _buildDashboard(taskController),
-                  const SizedBox(height: 32),
+                    // Dashboard (2 Column Layout)
+                    _buildDashboard(taskController, context),
+                    SizedBox(height: context.rh(24)),
 
-                  // Tasks Header & Tabs
-                  Text(
-                    'Tasks',
-                    style: GoogleFonts.manrope(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                    // Tasks Header & Tabs
+                    Text(
+                      'Tasks',
+                      style: GoogleFonts.manrope(
+                        fontSize: context.rf(18),
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildTabs(context),
-                  const SizedBox(height: 20),
+                    SizedBox(height: context.rh(12)),
+                    _buildTabs(context),
+                    SizedBox(height: context.rh(16)),
 
-                  // Task List
-                  _buildSyncedTaskList(taskController),
-                ],
-              ),
-            );
-          },
+                    // Task List
+                    _buildSyncedTaskList(taskController),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final controller = context.read<TaskController>();
-          await Navigator.pushNamed(context, AppRoutes.addTask);
-          if (mounted) {
-            controller.loadTasks();
-          }
-        },
-        backgroundColor: const Color(0xFF007AFF),
-        elevation: 4,
-        child: const Icon(Icons.add_rounded, color: Colors.white, size: 28),
-      ),
-      bottomNavigationBar: const CustomBottomNavBar(currentIndex: 0),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            final controller = context.read<TaskController>();
+            await Navigator.pushNamed(context, AppRoutes.addTask);
+            if (mounted) {
+              controller.loadTasks();
+            }
+          },
+          backgroundColor: const Color(0xFF007AFF),
+          elevation: 4,
+          child: Icon(
+            Icons.add_rounded,
+            color: Colors.white,
+            size: context.rw(24),
+          ),
+        ),
+        bottomNavigationBar: const CustomBottomNavBar(currentIndex: 0),
       ),
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(BuildContext context) {
     final now = DateTime.now();
     final dayName = DateFormat('EEEE').format(now);
     final dateString = DateFormat('MMMM d').format(now);
@@ -122,58 +130,37 @@ class _HomeScreenState extends State<HomeScreen>
                 dayName,
                 style: GoogleFonts.manrope(
                   color: Colors.black87,
-                  fontSize: 32,
+                  fontSize: context.rf(26),
                   fontWeight: FontWeight.w800,
                   height: 1.1,
                 ),
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: context.rh(2)),
               Text(
                 dateString,
                 style: GoogleFonts.manrope(
                   color: Colors.grey[600],
-                  fontSize: 16,
+                  fontSize: context.rf(14),
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ],
           ),
         ),
-        // Search Button
-        Container(
-          width: 44,
-          height: 44,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.white,
-            border: Border.all(color: Colors.grey.withOpacity(0.1)),
-          ),
-          child: IconButton(
-            icon: const Icon(
-              Icons.search_rounded,
-              color: Colors.black87,
-              size: 22,
-            ),
-            onPressed: () {
-              // Search action
-            },
-          ),
-        ),
-        const SizedBox(width: 12),
         // Settings Button
         Container(
-          width: 44,
-          height: 44,
+          width: context.rw(38),
+          height: context.rw(38),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: Colors.white,
-            border: Border.all(color: Colors.grey.withOpacity(0.1)),
+            border: Border.all(color: Colors.grey.withValues(alpha: 0.1)),
           ),
           child: IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.settings_outlined,
               color: Colors.black87,
-              size: 22,
+              size: context.rw(20),
             ),
             onPressed: () {
               Navigator.pushNamed(context, AppRoutes.settings);
@@ -184,12 +171,12 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildDashboard(TaskController taskController) {
+  Widget _buildDashboard(TaskController taskController, BuildContext context) {
     final gamificationService = GamificationService.instance;
-    // Fixed heights for perfect alignment
-    const double subCardHeight = 120; // Reduced height for compactness
-    const double gap = 16;
-    const double mainCardHeight = (subCardHeight * 2) + gap;
+    // Responsive heights for perfect alignment
+    final double subCardHeight = context.rh(90); // Responsive height
+    final double gap = context.rh(12);
+    final double mainCardHeight = (subCardHeight * 2) + gap;
 
     return SizedBox(
       height: mainCardHeight,
@@ -205,13 +192,13 @@ class _HomeScreenState extends State<HomeScreen>
                 return DailyGoalCard(
                   targetTasks: gamificationService.dailyGoal.targetTasks,
                   completedTasks: gamificationService.dailyGoal.todayCompleted,
-                  onTap:
-                      () => Navigator.pushNamed(context, AppRoutes.gamification),
+                  onTap: () =>
+                      Navigator.pushNamed(context, AppRoutes.gamification),
                 );
               },
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: context.rw(12)),
           // Right: Stats Column
           Expanded(
             flex: 6,
@@ -222,25 +209,26 @@ class _HomeScreenState extends State<HomeScreen>
                     listenable: gamificationService,
                     builder: (context, _) {
                       return GestureDetector(
-                        onTap:
-                            () => Navigator.pushNamed(
-                              context,
-                              AppRoutes.gamification,
-                            ),
+                        onTap: () => Navigator.pushNamed(
+                          context,
+                          AppRoutes.gamification,
+                        ),
                         child: StreakCard(
-                          currentStreak: gamificationService.streak.currentStreak,
-                          longestStreak: gamificationService.streak.longestStreak,
+                          currentStreak:
+                              gamificationService.streak.currentStreak,
+                          longestStreak:
+                              gamificationService.streak.longestStreak,
                         ),
                       );
                     },
                   ),
                 ),
-                const SizedBox(height: 16),
+                SizedBox(height: context.rh(12)),
                 Expanded(
                   child: StatCard(
                     title: 'To Do',
-                    currentValue:
-                        taskController.incompleteTasksCount.toString(),
+                    currentValue: taskController.incompleteTasksCount
+                        .toString(),
                     unit: '',
                     icon: Icons.calendar_today_rounded,
                     iconColor: const Color(0xFF6C63FF),
@@ -248,11 +236,11 @@ class _HomeScreenState extends State<HomeScreen>
                     trailing: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _buildDot(Colors.redAccent),
-                        const SizedBox(height: 4),
-                        _buildDot(Colors.blueAccent),
-                        const SizedBox(height: 4),
-                        _buildDot(Colors.greenAccent),
+                        _buildDot(context, Colors.redAccent),
+                        SizedBox(height: context.rh(4)),
+                        _buildDot(context, Colors.blueAccent),
+                        SizedBox(height: context.rh(4)),
+                        _buildDot(context, Colors.greenAccent),
                       ],
                     ),
                   ),
@@ -265,30 +253,30 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget _buildDot(Color color) {
+  Widget _buildDot(BuildContext context, Color color) {
     return Container(
-      width: 6,
-      height: 6,
+      width: context.rw(6),
+      height: context.rw(6),
       decoration: BoxDecoration(color: color, shape: BoxShape.circle),
     );
   }
 
   Widget _buildTabs(BuildContext context) {
     return Container(
-      height: 44,
+      height: context.rh(38),
       decoration: BoxDecoration(
         color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(context.rw(10)),
       ),
-      padding: const EdgeInsets.all(4),
+      padding: EdgeInsets.all(context.rw(3)),
       child: TabBar(
         controller: _tabController,
         indicator: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(context.rw(8)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 2,
               offset: const Offset(0, 1),
             ),
@@ -300,11 +288,11 @@ class _HomeScreenState extends State<HomeScreen>
         unselectedLabelColor: Colors.grey[600],
         labelStyle: GoogleFonts.manrope(
           fontWeight: FontWeight.bold,
-          fontSize: 13,
+          fontSize: context.rf(12),
         ),
         unselectedLabelStyle: GoogleFonts.manrope(
           fontWeight: FontWeight.w600,
-          fontSize: 13,
+          fontSize: context.rf(12),
         ),
         tabs: const [
           Tab(text: 'Today'),
@@ -352,15 +340,22 @@ class _HomeScreenState extends State<HomeScreen>
 
     if (tasks.isEmpty) {
       return Padding(
-        padding: const EdgeInsets.only(top: 40),
+        padding: EdgeInsets.only(top: context.rh(32)),
         child: Center(
           child: Column(
             children: [
-              Icon(Icons.task_outlined, size: 48, color: Colors.grey[300]),
-              const SizedBox(height: 16),
+              Icon(
+                Icons.task_outlined,
+                size: context.rw(40),
+                color: Colors.grey[300],
+              ),
+              SizedBox(height: context.rh(12)),
               Text(
                 "No tasks found",
-                style: GoogleFonts.manrope(color: Colors.grey[400]),
+                style: GoogleFonts.manrope(
+                  color: Colors.grey[400],
+                  fontSize: context.rf(13),
+                ),
               ),
             ],
           ),
@@ -380,7 +375,7 @@ class _HomeScreenState extends State<HomeScreen>
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: itemsWithAds.length,
-      separatorBuilder: (context, index) => const SizedBox(height: 12),
+      separatorBuilder: (context, index) => SizedBox(height: context.rh(8)),
       itemBuilder: (context, index) {
         final item = itemsWithAds[index];
         if (item is String && item.startsWith('ad_')) {
@@ -392,10 +387,10 @@ class _HomeScreenState extends State<HomeScreen>
         return Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(context.rw(14)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.02),
+                color: Colors.black.withValues(alpha: 0.02),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -416,4 +411,3 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 }
-

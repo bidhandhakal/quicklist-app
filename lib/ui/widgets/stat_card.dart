@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../utils/size_config.dart';
 
 class StatCard extends StatelessWidget {
   final String title;
@@ -25,16 +26,19 @@ class StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(32),
+      borderRadius: BorderRadius.circular(context.rw(20)),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        padding: EdgeInsets.symmetric(
+          horizontal: context.rw(14),
+          vertical: context.rh(12),
+        ),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(32),
+          borderRadius: BorderRadius.circular(context.rw(20)),
           // No heavy border, subtle shadow
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.03),
+              color: Colors.black.withValues(alpha: 0.03),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -43,22 +47,20 @@ class StatCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-             // Icon
+            // Icon
             Container(
-              width: 48,
-              height: 48,
+              width: context.rw(36),
+              height: context.rw(36),
               decoration: BoxDecoration(
-                color: const Color(0xFF6C63FF).withOpacity(0.1), // Light version of icon color usually
+                color: const Color(
+                  0xFF6C63FF,
+                ).withValues(alpha: 0.1), // Light version of icon color usually
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                icon,
-                color: iconColor,
-                size: 24,
-              ),
+              child: Icon(icon, color: iconColor, size: context.rw(18)),
             ),
-            const SizedBox(width: 16),
-             // Text
+            SizedBox(width: context.rw(12)),
+            // Text
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -67,17 +69,17 @@ class StatCard extends StatelessWidget {
                   Text(
                     currentValue,
                     style: GoogleFonts.manrope(
-                      fontSize: 24,
+                      fontSize: context.rf(20),
                       fontWeight: FontWeight.w800,
                       color: Colors.black87,
                       height: 1.0,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: context.rh(2)),
                   Text(
                     title, // "To Do" passed here usually as title
                     style: GoogleFonts.manrope(
-                      fontSize: 12,
+                      fontSize: context.rf(11),
                       color: Colors.grey[500],
                       fontWeight: FontWeight.w600,
                     ),
@@ -86,7 +88,7 @@ class StatCard extends StatelessWidget {
               ),
             ),
             if (trailing != null) ...[
-              const SizedBox(width: 8),
+              SizedBox(width: context.rw(8)),
               trailing!,
             ],
           ],

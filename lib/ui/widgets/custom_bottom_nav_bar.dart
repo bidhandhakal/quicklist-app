@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../config/routes.dart';
+import '../../utils/size_config.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final int currentIndex;
 
-  const CustomBottomNavBar({
-    super.key,
-    required this.currentIndex,
-  });
+  const CustomBottomNavBar({super.key, required this.currentIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +15,10 @@ class CustomBottomNavBar extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 20,
             offset: const Offset(0, -5),
-          )
+          ),
         ],
       ),
       child: BottomNavigationBar(
@@ -31,11 +29,11 @@ class CustomBottomNavBar extends StatelessWidget {
         unselectedItemColor: Colors.grey[400],
         selectedLabelStyle: GoogleFonts.manrope(
           fontWeight: FontWeight.w700,
-          fontSize: 12,
+          fontSize: context.rf(12),
         ),
         unselectedLabelStyle: GoogleFonts.manrope(
           fontWeight: FontWeight.w500,
-          fontSize: 12,
+          fontSize: context.rf(12),
         ),
         type: BottomNavigationBarType.fixed,
         onTap: (index) => _onTap(context, index),

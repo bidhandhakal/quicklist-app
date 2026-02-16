@@ -6,6 +6,7 @@ import '../../controllers/task_controller.dart';
 import '../../data/dummy_categories.dart';
 import '../../utils/helpers.dart';
 import '../../utils/constants.dart';
+import '../../utils/size_config.dart';
 import 'priority_tag.dart';
 
 class TaskTile extends StatelessWidget {
@@ -52,23 +53,26 @@ class TaskTile extends StatelessWidget {
       },
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(context.rw(16)),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          padding: EdgeInsets.symmetric(
+            horizontal: context.rw(14),
+            vertical: context.rh(10),
+          ),
           child: Row(
             children: [
               // Checkbox
               GestureDetector(
                 onTap: () => taskController.toggleTaskCompletion(task),
                 child: Container(
-                  width: 24,
-                  height: 24,
+                  width: context.rw(22),
+                  height: context.rw(22),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: task.isCompleted
                           ? const Color(0xFF007AFF)
-                          : Colors.grey.withOpacity(0.4),
+                          : Colors.grey.withValues(alpha: 0.4),
                       width: 2,
                     ),
                     color: task.isCompleted
@@ -76,11 +80,15 @@ class TaskTile extends StatelessWidget {
                         : Colors.transparent,
                   ),
                   child: task.isCompleted
-                      ? const Icon(Icons.check, size: 16, color: Colors.white)
+                      ? Icon(
+                          Icons.check,
+                          size: context.rw(14),
+                          color: Colors.white,
+                        )
                       : null,
                 ),
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: context.rw(12)),
 
               // Task content
               Expanded(
@@ -91,7 +99,7 @@ class TaskTile extends StatelessWidget {
                     Text(
                       task.title,
                       style: GoogleFonts.manrope(
-                        fontSize: 16,
+                        fontSize: context.rf(15),
                         fontWeight: FontWeight.w600,
                         decoration: task.isCompleted
                             ? TextDecoration.lineThrough
@@ -107,11 +115,11 @@ class TaskTile extends StatelessWidget {
                     // Description
                     if (task.description != null &&
                         task.description!.isNotEmpty) ...[
-                      const SizedBox(height: 4),
+                      SizedBox(height: context.rh(4)),
                       Text(
                         task.description!,
                         style: GoogleFonts.manrope(
-                          fontSize: 13,
+                          fontSize: context.rf(12),
                           color: Colors.grey[600],
                           height: 1.4,
                         ),
@@ -120,37 +128,39 @@ class TaskTile extends StatelessWidget {
                       ),
                     ],
 
-                    const SizedBox(height: 8),
+                    SizedBox(height: context.rh(6)),
 
                     // Tags row
                     Wrap(
-                      spacing: 8,
+                      spacing: 6,
                       runSpacing: 4,
                       children: [
                         // Category chip
                         if (category != null)
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: context.rw(8),
+                              vertical: context.rh(4),
                             ),
                             decoration: BoxDecoration(
-                              color: category.color.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(6),
+                              color: category.color.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(
+                                context.rw(6),
+                              ),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
                                   category.icon,
-                                  size: 12,
+                                  size: context.rw(12),
                                   color: category.color,
                                 ),
-                                const SizedBox(width: 4),
+                                SizedBox(width: context.rw(4)),
                                 Text(
                                   category.name,
                                   style: GoogleFonts.manrope(
-                                    fontSize: 11,
+                                    fontSize: context.rf(11),
                                     color: category.color,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -171,8 +181,8 @@ class TaskTile extends StatelessWidget {
                             ),
                             decoration: BoxDecoration(
                               color: task.isOverdue
-                                  ? AppColors.error.withOpacity(0.1)
-                                  : Colors.blueGrey.withOpacity(0.05),
+                                  ? AppColors.error.withValues(alpha: 0.1)
+                                  : Colors.blueGrey.withValues(alpha: 0.05),
                               borderRadius: BorderRadius.circular(6),
                             ),
                             child: Row(
@@ -227,8 +237,8 @@ class TaskTile extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       decoration: BoxDecoration(
         color: isLeft
-            ? const Color(0xFF007AFF).withOpacity(0.2)
-            : AppColors.error.withOpacity(0.2),
+            ? const Color(0xFF007AFF).withValues(alpha: 0.2)
+            : AppColors.error.withValues(alpha: 0.2),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Icon(

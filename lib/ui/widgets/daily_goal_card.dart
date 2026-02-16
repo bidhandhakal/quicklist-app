@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../utils/size_config.dart';
 
 class DailyGoalCard extends StatelessWidget {
   final int targetTasks;
@@ -19,9 +20,12 @@ class DailyGoalCard extends StatelessWidget {
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(24),
+      borderRadius: BorderRadius.circular(context.rw(24)),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        padding: EdgeInsets.symmetric(
+          horizontal: context.rw(16),
+          vertical: context.rh(14),
+        ),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             begin: Alignment.topLeft,
@@ -31,12 +35,12 @@ class DailyGoalCard extends StatelessWidget {
               Color(0xFF0056D2), // Darker Blue
             ],
           ),
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(context.rw(20)),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF3A86FF).withOpacity(0.4),
-              blurRadius: 16,
-              offset: const Offset(0, 8),
+              color: const Color(0xFF3A86FF).withValues(alpha: 0.3),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
               spreadRadius: 0,
             ),
           ],
@@ -52,13 +56,13 @@ class DailyGoalCard extends StatelessWidget {
                 Text(
                   'DAILY GOAL',
                   style: GoogleFonts.manrope(
-                    color: Colors.white.withOpacity(0.8),
-                    fontSize: 12,
+                    color: Colors.white.withValues(alpha: 0.8),
+                    fontSize: context.rf(11),
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.0,
                   ),
                 ),
-                const SizedBox(height: 8),
+                SizedBox(height: context.rh(6)),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.baseline,
                   textBaseline: TextBaseline.alphabetic,
@@ -67,17 +71,17 @@ class DailyGoalCard extends StatelessWidget {
                       '$completedTasks',
                       style: GoogleFonts.manrope(
                         color: Colors.white,
-                        fontSize: 32,
+                        fontSize: context.rf(26),
                         fontWeight: FontWeight.w800,
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                      padding: EdgeInsets.symmetric(horizontal: context.rw(4)),
                       child: Text(
                         '/',
                         style: GoogleFonts.manrope(
-                          color: Colors.white.withOpacity(0.5),
-                          fontSize: 24,
+                          color: Colors.white.withValues(alpha: 0.5),
+                          fontSize: context.rf(18),
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -85,8 +89,8 @@ class DailyGoalCard extends StatelessWidget {
                     Text(
                       '$targetTasks',
                       style: GoogleFonts.manrope(
-                        color: Colors.white.withOpacity(0.7),
-                        fontSize: 20,
+                        color: Colors.white.withValues(alpha: 0.7),
+                        fontSize: context.rf(16),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -97,13 +101,13 @@ class DailyGoalCard extends StatelessWidget {
 
             // Right Side: Progress Indicator
             Container(
-              width: 60,
-              height: 60,
+              width: context.rw(48),
+              height: context.rw(48),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.white.withValues(alpha: 0.1),
               ),
-              padding: const EdgeInsets.all(4),
+              padding: EdgeInsets.all(context.rw(3)),
               child: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -111,7 +115,7 @@ class DailyGoalCard extends StatelessWidget {
                     value: 1.0, // Background track
                     strokeWidth: 6,
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      Colors.white.withOpacity(0.2),
+                      Colors.white.withValues(alpha: 0.2),
                     ),
                     strokeCap: StrokeCap.round,
                   ),

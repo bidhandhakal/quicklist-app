@@ -6,6 +6,7 @@ import '../../models/task_model.dart';
 import '../../data/dummy_categories.dart';
 import '../../utils/constants.dart';
 import '../../utils/validators.dart';
+import '../../utils/size_config.dart';
 import '../widgets/banner_ad_widget.dart';
 
 class AddTaskScreen extends StatefulWidget {
@@ -69,6 +70,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
     return Scaffold(
       appBar: AppBar(
         systemOverlayStyle: const SystemUiOverlayStyle(
@@ -89,7 +91,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             child: Form(
               key: _formKey,
               child: ListView(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(context.rw(16)),
                 children: [
                   // Title field
                   TextFormField(
@@ -103,7 +105,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     textCapitalization: TextCapitalization.sentences,
                     autofocus: !_isEditing,
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: context.rh(16)),
 
                   // Description field
                   TextFormField(
@@ -117,17 +119,17 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     textCapitalization: TextCapitalization.sentences,
                     maxLines: 3,
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: context.rh(24)),
 
                   // Category selector
                   Text(
                     'Category',
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: context.rh(12)),
                   Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
+                    spacing: context.rw(8),
+                    runSpacing: context.rh(8),
                     children: DummyCategories.categories.map((category) {
                       final isSelected = _selectedCategoryId == category.id;
                       return FilterChip(
@@ -136,10 +138,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                           children: [
                             Icon(
                               category.icon,
-                              size: 16,
+                              size: context.rw(16),
                               color: isSelected ? category.color : null,
                             ),
-                            const SizedBox(width: 4),
+                            SizedBox(width: context.rw(4)),
                             Text(category.name),
                           ],
                         ),
@@ -153,20 +155,22 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       );
                     }).toList(),
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: context.rh(24)),
 
                   // Priority selector
                   Text(
                     'Priority',
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: context.rh(12)),
                   Row(
                     children: TaskPriority.values.map((priority) {
                       final isSelected = _selectedPriority == priority;
                       return Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: context.rw(4),
+                          ),
                           child: ChoiceChip(
                             label: SizedBox(
                               width: double.infinity,
@@ -187,7 +191,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                             avatar: isSelected
                                 ? Icon(
                                     Icons.check,
-                                    size: 16,
+                                    size: context.rw(16),
                                     color: priority.color,
                                   )
                                 : null,
@@ -196,17 +200,17 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                       );
                     }).toList(),
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: context.rh(24)),
 
                   // Deadline selector
                   Text(
                     'Deadline',
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: context.rh(12)),
                   ListTile(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(context.rw(12)),
                       side: BorderSide(
                         color: Theme.of(context).colorScheme.outline,
                       ),
@@ -233,12 +237,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                         : const Icon(Icons.chevron_right),
                     onTap: _selectDeadline,
                   ),
-                  const SizedBox(height: 24),
+                  SizedBox(height: context.rh(24)),
 
                   // Reminder toggle
                   SwitchListTile(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(context.rw(12)),
                       side: BorderSide(
                         color: Theme.of(context).colorScheme.outline,
                       ),
@@ -261,9 +265,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   ),
 
                   if (_reminderEnabled) ...[
-                    const SizedBox(height: 8),
+                    SizedBox(height: context.rh(8)),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: EdgeInsets.symmetric(horizontal: context.rw(16)),
                       child: TextButton.icon(
                         onPressed: _selectReminderDateTime,
                         icon: const Icon(Icons.edit),
@@ -272,13 +276,13 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     ),
                   ],
 
-                  const SizedBox(height: 32),
+                  SizedBox(height: context.rh(32)),
 
                   // Save button
                   FilledButton(
                     onPressed: _saveTask,
                     style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.all(16),
+                      padding: EdgeInsets.all(context.rw(16)),
                     ),
                     child: Text(_isEditing ? 'Update Task' : 'Add Task'),
                   ),

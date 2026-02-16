@@ -6,6 +6,7 @@ import '../../services/notification_service.dart';
 import '../../services/rewarded_ad_manager.dart';
 import '../../controllers/task_controller.dart';
 import '../../utils/constants.dart';
+import '../../utils/size_config.dart';
 import '../widgets/widgets.dart';
 import '../widgets/native_ad_widget.dart';
 import '../widgets/banner_ad_widget.dart';
@@ -38,6 +39,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig.init(context);
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -56,11 +58,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
         children: [
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(context.rw(16)),
               children: [
                 // Notifications section
                 _buildSectionHeader('Notifications'),
-                const SizedBox(height: 8),
+                SizedBox(height: context.rh(8)),
 
                 CustomCard(
                   child: SwitchListTile(
@@ -79,16 +81,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
 
-                const SizedBox(height: 24),
+                SizedBox(height: context.rh(24)),
 
                 // Native Ad
                 const NativeAdWidget(screenId: 'settings_screen'),
 
-                const SizedBox(height: 24),
+                SizedBox(height: context.rh(24)),
 
                 // Data section
                 _buildSectionHeader('Data'),
-                const SizedBox(height: 8),
+                SizedBox(height: context.rh(8)),
 
                 Consumer<TaskController>(
                   builder: (context, taskController, child) {
@@ -115,7 +117,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 12),
+                        SizedBox(height: context.rh(12)),
                         Row(
                           children: [
                             Expanded(
@@ -126,7 +128,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 color: AppColors.success,
                               ),
                             ),
-                            const SizedBox(width: 12),
+                            SizedBox(width: context.rw(12)),
                             Expanded(
                               child: StatsCard(
                                 label: 'Progress',
@@ -144,7 +146,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   },
                 ),
 
-                const SizedBox(height: 16),
+                SizedBox(height: context.rh(16)),
 
                 InfoCard(
                   icon: Icons.delete_sweep,
@@ -154,11 +156,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   onTap: _clearAllTasks,
                 ),
 
-                const SizedBox(height: 24),
+                SizedBox(height: context.rh(24)),
 
                 // About section
                 _buildSectionHeader('About'),
-                const SizedBox(height: 8),
+                SizedBox(height: context.rh(8)),
 
                 InfoCard(
                   icon: Icons.info,
@@ -167,10 +169,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   iconColor: Theme.of(context).primaryColor,
                 ),
 
-                const SizedBox(height: 16),
+                SizedBox(height: context.rh(16)),
 
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: EdgeInsets.all(context.rw(16)),
                   child: Text(
                     'Made with ❤️ using Flutter',
                     textAlign: TextAlign.center,
@@ -189,7 +191,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _buildSectionHeader(String title) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      padding: EdgeInsets.fromLTRB(
+        context.rw(16),
+        context.rh(16),
+        context.rw(16),
+        context.rh(8),
+      ),
       child: Text(
         title,
         style: Theme.of(context).textTheme.titleSmall?.copyWith(
@@ -325,14 +332,14 @@ class _ClearTasksDialogState extends State<_ClearTasksDialog> {
                 ? 'You can now delete all tasks. This action cannot be undone.'
                 : 'To delete tasks, you must watch a short ad first.',
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: context.rh(16)),
           Container(
-            padding: const EdgeInsets.all(12),
+            padding: EdgeInsets.all(context.rw(12)),
             decoration: BoxDecoration(
               color: _hasWatchedAd
                   ? Theme.of(context).colorScheme.errorContainer
                   : Theme.of(context).colorScheme.primaryContainer,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(context.rw(8)),
             ),
             child: Row(
               children: [
@@ -342,7 +349,7 @@ class _ClearTasksDialogState extends State<_ClearTasksDialog> {
                       ? Theme.of(context).colorScheme.error
                       : Theme.of(context).colorScheme.primary,
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: context.rw(12)),
                 Expanded(
                   child: Text(
                     _hasWatchedAd
@@ -370,9 +377,9 @@ class _ClearTasksDialogState extends State<_ClearTasksDialog> {
           FilledButton.icon(
             onPressed: _isLoadingAd ? null : _watchAd,
             icon: _isLoadingAd
-                ? const SizedBox(
-                    width: 16,
-                    height: 16,
+                ? SizedBox(
+                    width: context.rw(16),
+                    height: context.rw(16),
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : const Icon(Icons.play_arrow),

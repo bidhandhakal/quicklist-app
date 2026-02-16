@@ -37,7 +37,7 @@ class AppTheme {
             Colors.transparent, // Make AppBar transparent to show background
         foregroundColor: AppColors.onSurface,
         titleTextStyle: GoogleFonts.manrope(
-          fontSize: 22,
+          fontSize: 18,
           fontWeight: FontWeight.w700,
           color: AppColors.onSurface,
         ),
@@ -53,13 +53,13 @@ class AppTheme {
       cardTheme: CardThemeData(
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
           side: BorderSide(
             color: AppColors.outlineVariant.withValues(alpha: 0.5),
             width: 1,
           ),
         ),
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
       ),
 
       // Floating Action Button Theme
@@ -75,28 +75,28 @@ class AppTheme {
         filled: true,
         fillColor: AppColors.surfaceVariant.withValues(alpha: 0.3),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: AppColors.error, width: 1),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: AppColors.error, width: 2),
         ),
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 16,
+          horizontal: 14,
+          vertical: 12,
         ),
       ),
 
@@ -105,10 +105,10 @@ class AppTheme {
         backgroundColor: AppColors.secondaryContainer,
         labelStyle: const TextStyle(
           color: AppColors.onSecondaryContainer,
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: FontWeight.w500,
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
 
@@ -124,7 +124,7 @@ class AppTheme {
       // Dialog Theme
       dialogTheme: DialogThemeData(
         backgroundColor: AppColors.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         elevation: 3,
       ),
 
@@ -132,7 +132,7 @@ class AppTheme {
       bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: AppColors.surface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         elevation: 3,
       ),
@@ -140,77 +140,77 @@ class AppTheme {
       // Text Theme
       textTheme: TextTheme(
         displayLarge: GoogleFonts.manrope(
-          fontSize: 57,
+          fontSize: 48,
           fontWeight: FontWeight.w400,
           color: AppColors.onSurface,
         ),
         displayMedium: GoogleFonts.manrope(
-          fontSize: 45,
+          fontSize: 38,
           fontWeight: FontWeight.w400,
           color: AppColors.onSurface,
         ),
         displaySmall: GoogleFonts.manrope(
-          fontSize: 36,
+          fontSize: 30,
           fontWeight: FontWeight.w400,
           color: AppColors.onSurface,
         ),
         headlineLarge: GoogleFonts.manrope(
-          fontSize: 32,
+          fontSize: 26,
           fontWeight: FontWeight.w600,
           color: AppColors.onSurface,
         ),
         headlineMedium: GoogleFonts.manrope(
-          fontSize: 28,
+          fontSize: 22,
           fontWeight: FontWeight.w600,
           color: AppColors.onSurface,
         ),
         headlineSmall: GoogleFonts.manrope(
-          fontSize: 24,
+          fontSize: 20,
           fontWeight: FontWeight.w600,
           color: AppColors.onSurface,
         ),
         titleLarge: GoogleFonts.manrope(
-          fontSize: 22,
+          fontSize: 18,
           fontWeight: FontWeight.w500,
           color: AppColors.onSurface,
         ),
         titleMedium: GoogleFonts.manrope(
-          fontSize: 16,
+          fontSize: 15,
           fontWeight: FontWeight.w500,
           color: AppColors.onSurface,
         ),
         titleSmall: GoogleFonts.manrope(
-          fontSize: 14,
+          fontSize: 13,
           fontWeight: FontWeight.w500,
           color: AppColors.onSurface,
         ),
         bodyLarge: GoogleFonts.manrope(
-          fontSize: 16,
+          fontSize: 15,
           fontWeight: FontWeight.w400,
           color: AppColors.onSurface,
         ),
         bodyMedium: GoogleFonts.manrope(
-          fontSize: 14,
+          fontSize: 13,
           fontWeight: FontWeight.w400,
           color: AppColors.onSurface,
         ),
         bodySmall: GoogleFonts.manrope(
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: FontWeight.w400,
           color: AppColors.onSurfaceVariant,
         ),
         labelLarge: GoogleFonts.manrope(
-          fontSize: 14,
+          fontSize: 13,
           fontWeight: FontWeight.w500,
           color: AppColors.onSurface,
         ),
         labelMedium: GoogleFonts.manrope(
-          fontSize: 12,
+          fontSize: 11,
           fontWeight: FontWeight.w500,
           color: AppColors.onSurface,
         ),
         labelSmall: GoogleFonts.manrope(
-          fontSize: 11,
+          fontSize: 10,
           fontWeight: FontWeight.w500,
           color: AppColors.onSurface,
         ),

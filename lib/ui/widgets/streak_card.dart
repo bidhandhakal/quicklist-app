@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../../utils/size_config.dart';
 
 class StreakCard extends StatelessWidget {
   final int currentStreak;
@@ -15,14 +16,17 @@ class StreakCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.rw(14),
+        vertical: context.rh(12),
+      ),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(32),
+        borderRadius: BorderRadius.circular(context.rw(20)),
         // No heavy border, subtle shadow
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -33,21 +37,23 @@ class StreakCard extends StatelessWidget {
         children: [
           // Icon
           Container(
-            width: 48,
-            height: 48,
+            width: context.rw(36),
+            height: context.rw(36),
             decoration: BoxDecoration(
-              color: const Color(0xFFFF9F1C).withOpacity(0.1), // Light Orange
+              color: const Color(
+                0xFFFF9F1C,
+              ).withValues(alpha: 0.1), // Light Orange
               shape: BoxShape.circle,
             ),
-            child: const Center(
+            child: Center(
               child: FaIcon(
                 FontAwesomeIcons.fire,
-                color: Color(0xFFFF9F1C),
-                size: 24,
+                color: const Color(0xFFFF9F1C),
+                size: context.rw(18),
               ),
             ),
           ),
-          const SizedBox(width: 16),
+          SizedBox(width: context.rw(12)),
           // Text
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,17 +62,17 @@ class StreakCard extends StatelessWidget {
               Text(
                 '$currentStreak',
                 style: GoogleFonts.manrope(
-                  fontSize: 24,
+                  fontSize: context.rf(20),
                   fontWeight: FontWeight.w800,
                   color: Colors.black87,
                   height: 1.0,
                 ),
               ),
-              const SizedBox(height: 4),
+              SizedBox(height: context.rh(2)),
               Text(
                 'Day Streak',
                 style: GoogleFonts.manrope(
-                  fontSize: 12,
+                  fontSize: context.rf(11),
                   color: Colors.grey[500],
                   fontWeight: FontWeight.w600,
                 ),
