@@ -1,6 +1,8 @@
 import 'package:home_widget/home_widget.dart';
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 import '../models/task_model.dart';
+import '../services/category_service.dart';
 
 class HomeWidgetService {
   static HomeWidgetService? _instance;
@@ -13,37 +15,74 @@ class HomeWidgetService {
 
   static const String _widgetName = 'QuickListWidget';
   static const String _androidProviderName = 'QuickListWidgetProvider';
+  static const int _maxWidgetTasks = 4;
 
-  /// Update widget with task data
-  Future<void> updateWidget({
-    required int totalTasks,
-    required int completedTasks,
-    required int activeTasks,
-    List<Task>? upcomingTasks,
-  }) async {
+  /// Format deadline text matching the home page style (Helpers.formatDateShort)
+  static String _formatDeadline(Task task) {
+    if (task.deadline == null) return '';
+    return DateFormat('MMM dd').format(task.deadline!);
+  }
+
+  /// Update widget with the 4 most recent tasks (same as home page)
+  Future<void> updateWidget({required List<Task> recentTasks}) async {
     try {
-      // Save data to widget
-      await HomeWidget.saveWidgetData<int>('total_tasks', totalTasks);
-      await HomeWidget.saveWidgetData<int>('completed_tasks', completedTasks);
-      await HomeWidget.saveWidgetData<int>('active_tasks', activeTasks);
+      final taskCount = recentTasks.length.clamp(0, _maxWidgetTasks);
+      await HomeWidget.saveWidgetData<int>('task_count', taskCount);
 
-      // Save next task if available
-      if (upcomingTasks != null && upcomingTasks.isNotEmpty) {
-        final nextTask = upcomingTasks.first;
-        await HomeWidget.saveWidgetData<String>(
-          'next_task_title',
-          nextTask.title,
-        );
-        await HomeWidget.saveWidgetData<String>(
-          'next_task_category',
-          nextTask.categoryId,
-        );
-      } else {
-        await HomeWidget.saveWidgetData<String>(
-          'next_task_title',
-          'No upcoming tasks',
-        );
-        await HomeWidget.saveWidgetData<String>('next_task_category', '');
+      for (int i = 0; i < _maxWidgetTasks; i++) {
+        if (i < recentTasks.length) {
+          final task = recentTasks[i];
+
+          // Title
+          await HomeWidget.saveWidgetData<String>('task_title_$i', task.title);
+
+          // Completed status (for checkbox)
+          await HomeWidget.saveWidgetData<bool>(
+            'task_completed_$i',
+            task.isCompleted,
+          );
+
+          // Priority (0=low, 1=medium, 2=high)
+          await HomeWidget.saveWidgetData<int>(
+            'task_priority_$i',
+            task.priority,
+          );
+
+          // Category name
+          String categoryName = '';
+          if (task.categoryId != null) {
+            final category = CategoryService().getCategoryById(
+              task.categoryId!,
+            );
+            if (category != null) {
+              categoryName = category.name;
+            }
+          }
+          await HomeWidget.saveWidgetData<String>(
+            'task_category_$i',
+            categoryName,
+          );
+
+          // Deadline text
+          final deadlineText = _formatDeadline(task);
+          await HomeWidget.saveWidgetData<String>(
+            'task_deadline_$i',
+            deadlineText,
+          );
+
+          // Overdue status (for red color)
+          await HomeWidget.saveWidgetData<bool>(
+            'task_overdue_$i',
+            task.isOverdue,
+          );
+        } else {
+          await HomeWidget.saveWidgetData<String>('task_title_$i', '');
+          await HomeWidget.saveWidgetData<bool>('task_completed_$i', false);
+          await HomeWidget.saveWidgetData<int>('task_priority_$i', 1);
+          await HomeWidget.saveWidgetData<String>('task_category_$i', '');
+          await HomeWidget.saveWidgetData<String>('task_deadline_$i', '');
+          await HomeWidget.saveWidgetData<bool>('task_overdue_$i', false);
+        }
       }
 
       // Update the widget
@@ -60,10 +99,7 @@ class HomeWidgetService {
 
   /// Initialize widget callbacks
   Future<void> initialize() async {
-    // Set up background callback for widget interactions
-    HomeWidget.setAppGroupId('group.com.example.quicklist');
-
-    // Register callback for widget taps
+    HomeWidget.setAppGroupId('group.com.rimaoli.quicklist');
     HomeWidget.registerInteractivityCallback(backgroundCallback);
   }
 
@@ -77,7 +113,6 @@ class HomeWidgetService {
   /// Check if widgets are supported on this platform
   Future<bool> isWidgetSupported() async {
     try {
-      // Widgets are supported on Android and iOS
       return true;
     } catch (e) {
       return false;

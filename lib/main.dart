@@ -18,6 +18,10 @@ import 'services/rewarded_ad_manager.dart';
 import 'services/screen_ad_manager.dart';
 import 'services/gamification_service.dart';
 import 'controllers/task_controller.dart';
+import 'ui/screens/add_task_screen.dart';
+
+/// Global navigator key for deep link navigation (e.g., widget FAB)
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -126,6 +130,20 @@ class _MyAppState extends State<MyApp> {
     // Initialize TaskController asynchronously
     _taskController.init();
 
+    // Listen for widget FAB "add task" navigation
+    const channel = MethodChannel('com.quicklist/navigation');
+    channel.setMethodCallHandler((call) async {
+      if (call.method == 'openAddTask') {
+        // Wait a frame so the navigator is ready
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final context = navigatorKey.currentContext;
+          if (context != null) {
+            AddTaskScreen.show(context);
+          }
+        });
+      }
+    });
+
     // Initialize app lifecycle reactor for app open ads
     _appLifecycleReactor = AppLifecycleReactor(
       appOpenAdManager: AppOpenAdManager(),
@@ -147,6 +165,7 @@ class _MyAppState extends State<MyApp> {
         title: 'QuickList',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
+        navigatorKey: navigatorKey,
         initialRoute: AppRoutes.home,
         routes: AppRoutes.getRoutes(),
         onGenerateRoute: AppRoutes.onGenerateRoute,
