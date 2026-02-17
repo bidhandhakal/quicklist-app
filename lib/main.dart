@@ -81,6 +81,7 @@ Future<void> _initializeAdsInBackground() async {
     // This fires all requests simultaneously for maximum speed
     Future.microtask(() {
       // Preload banner ads for all screens
+      ScreenAdManager.instance.preloadBannerAd('home_screen');
       ScreenAdManager.instance.preloadBannerAd('calendar_screen');
       ScreenAdManager.instance.preloadBannerAd('add_task_screen');
       ScreenAdManager.instance.preloadBannerAd('settings_screen');

@@ -12,6 +12,7 @@ import '../widgets/daily_goal_card.dart';
 import '../widgets/streak_card.dart';
 import '../widgets/stat_card.dart';
 import '../widgets/native_ad_widget.dart';
+import '../widgets/banner_ad_widget.dart';
 import 'add_task_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -81,6 +82,11 @@ class _HomeScreenState extends State<HomeScreen>
 
                   // Task List
                   _buildSyncedTaskList(taskController),
+
+                  SizedBox(height: context.rh(16)),
+
+                  // Banner Ad at bottom
+                  const BannerAdWidget(screenId: 'home_screen'),
                 ],
               ),
             );
