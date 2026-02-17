@@ -9,6 +9,8 @@ import '../../utils/constants.dart';
 import '../../utils/size_config.dart';
 import '../widgets/task_tile.dart';
 import '../widgets/empty_state.dart';
+import '../widgets/banner_ad_widget.dart';
+import '../widgets/native_ad_widget.dart';
 import 'add_task_screen.dart';
 
 class CategoryManagementScreen extends StatefulWidget {
@@ -145,16 +147,35 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
                     );
                   }
 
+                  // Create list with ads interspersed
+                  final itemsWithAds = <dynamic>[];
+                  for (int i = 0; i < _categories.length; i++) {
+                    itemsWithAds.add(_categories[i]);
+                    if ((i + 1) % 3 == 0 && i != _categories.length - 1) {
+                      itemsWithAds.add('ad_$i');
+                    }
+                  }
+
                   return ListView.separated(
                     padding: EdgeInsets.symmetric(
                       horizontal: context.rw(16),
                       vertical: context.rh(8),
                     ),
-                    itemCount: _categories.length,
+                    itemCount: itemsWithAds.length,
                     separatorBuilder: (context, index) =>
                         SizedBox(height: context.rh(10)),
                     itemBuilder: (context, index) {
-                      final category = _categories[index];
+                      final item = itemsWithAds[index];
+
+                      // Check if this is an ad
+                      if (item is String && item.startsWith('ad_')) {
+                        return NativeAdWidget(
+                          screenId: 'category_management_screen_$item',
+                        );
+                      }
+
+                      // Otherwise it's a category
+                      final category = item as cat_model.Category;
                       final categoryTasks = taskController.getTasksByCategory(
                         category.id,
                       );
@@ -293,6 +314,9 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
                 },
               ),
             ),
+
+            // Banner Ad
+            const BannerAdWidget(screenId: 'category_management_screen'),
           ],
         ),
       ),

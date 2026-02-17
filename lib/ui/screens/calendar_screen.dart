@@ -8,6 +8,7 @@ import '../../utils/constants.dart';
 import '../widgets/task_tile.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/banner_ad_widget.dart';
+import '../widgets/native_ad_widget.dart';
 import 'add_task_screen.dart';
 
 class CalendarScreen extends StatefulWidget {
@@ -213,17 +214,36 @@ class _CalendarScreenState extends State<CalendarScreen> {
       );
     }
 
+    // Create list with ads interspersed
+    final itemsWithAds = <dynamic>[];
+    for (int i = 0; i < tasks.length; i++) {
+      itemsWithAds.add(tasks[i]);
+      if ((i + 1) % 3 == 0 && i != tasks.length - 1) {
+        itemsWithAds.add('ad_$i');
+      }
+    }
+
     return ListView.builder(
       padding: EdgeInsets.only(bottom: context.rh(16)),
-      itemCount: tasks.length,
+      itemCount: itemsWithAds.length,
       itemBuilder: (context, index) {
+        final item = itemsWithAds[index];
+        
+        // Check if this is an ad
+        if (item is String && item.startsWith('ad_')) {
+          return NativeAdWidget(
+            screenId: 'calendar_screen_tasks_$item',
+          );
+        }
+
+        // Otherwise it's a task
         return TaskTile(
-          task: tasks[index],
+          task: item,
           onTap: () {
             Navigator.pushNamed(
               context,
               AppRoutes.editTask,
-              arguments: tasks[index].id,
+              arguments: item.id,
             );
           },
         );

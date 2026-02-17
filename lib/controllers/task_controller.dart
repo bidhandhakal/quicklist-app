@@ -155,9 +155,9 @@ class TaskController extends ChangeNotifier {
     await _storageService.deleteTask(taskId);
     await loadTasks();
 
-    // Show interstitial ad every 3 deletions
+    // Show interstitial ad every 2 deletions
     _completedTasksCounter++;
-    if (_completedTasksCounter % 3 == 0) {
+    if (_completedTasksCounter % 2 == 0) {
       _adManager.showAd();
     }
   }
@@ -175,7 +175,7 @@ class TaskController extends ChangeNotifier {
     if (!task.isCompleted) {
       await _gamificationService.onTaskCompleted();
       _completedTasksCounter++;
-      if (_completedTasksCounter % 3 == 0) {
+      if (_completedTasksCounter % 2 == 0) {
         _adManager.showAd();
       }
     } else {
