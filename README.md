@@ -9,8 +9,9 @@ A modern, feature-rich To-Do List application built with Flutter featuring a cle
 - ✅ **Complete Task Management** - Create, edit, delete, and complete tasks
 - 📱 **Material 3 UI** - Clean, modern interface following Material Design 3 guidelines
 - 💾 **Local Storage** - Persistent data storage using Hive
-- 🔔 **Smart Notifications** - Task reminders and deadline alerts using flutter_local_notifications
-- 🎨 **Beautiful Animations** - Smooth transitions and animated splash screen
+- 🔔 **Smart Notifications** - Task reminders and deadline alerts using awesome_notifications
+- 🏠 **Home Screen Widget** - Quick access to tasks directly from your home screen
+- 🎨 **Beautiful Animations** - Smooth transitions and Lottie animations
 
 ### 🎮 Gamification Features (NEW!)
 
@@ -60,9 +61,15 @@ A modern, feature-rich To-Do List application built with Flutter featuring a cle
 
 - `provider: ^6.1.1` - State management
 - `hive: ^2.2.3` & `hive_flutter: ^1.1.0` - Local database
-- `flutter_local_notifications: ^17.0.0` - Notifications
+- `awesome_notifications: ^0.10.1` - Notifications and reminders
+- `home_widget: ^0.6.0` - Home screen widget
 - `table_calendar: ^3.0.9` - Calendar widget
-- `intl: ^0.19.0` - Date/time formatting
+- `lottie: ^3.1.0` - Animations
+- `google_mobile_ads: ^6.0.0` - Ad integration
+- `google_fonts: ^6.3.3` - Custom fonts
+- `intl: ^0.20.2` - Date/time formatting
+- `uuid: ^4.3.3` - Unique ID generation
+- `package_info_plus: ^8.2.1` - App information
 
 ## 🎯 Usage Guide
 
