@@ -9,6 +9,7 @@ import '../../utils/size_config.dart';
 import '../../utils/constants.dart';
 import '../widgets/achievement_card.dart';
 import '../widgets/native_ad_widget.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class GamificationScreen extends StatefulWidget {
   const GamificationScreen({super.key});
@@ -372,13 +373,14 @@ class _GamificationScreenState extends State<GamificationScreen>
                   width: context.rw(40),
                   height: context.rw(40),
                   decoration: BoxDecoration(
-                    color: Colors.orange.withValues(alpha: 0.1),
+                    color: const Color(0xFFFF9F1C).withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Center(
-                    child: Text(
-                      '🔥',
-                      style: TextStyle(fontSize: context.rf(20)),
+                    child: FaIcon(
+                      FontAwesomeIcons.fire,
+                      color: const Color(0xFFFF9F1C),
+                      size: context.rw(20),
                     ),
                   ),
                 ),

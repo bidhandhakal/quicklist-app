@@ -261,15 +261,31 @@ class TaskController extends ChangeNotifier {
 
   // Update home screen widget
   Future<void> _updateHomeWidget() async {
-    final upcomingTasks =
-        _tasks.where((t) => !t.isCompleted && t.deadline != null).toList()
-          ..sort((a, b) => a.deadline!.compareTo(b.deadline!));
+    // Show the most recent tasks (same sort as home page: incomplete first, then by deadline, priority, newest)
+    final sortedTasks = List<Task>.from(_tasks);
+    sortedTasks.sort((a, b) {
+      // Incomplete tasks first
+      if (a.isCompleted != b.isCompleted) {
+        return a.isCompleted ? 1 : -1;
+      }
+      // Sort by deadline
+      if (a.deadline != null && b.deadline != null) {
+        return a.deadline!.compareTo(b.deadline!);
+      } else if (a.deadline != null) {
+        return -1;
+      } else if (b.deadline != null) {
+        return 1;
+      }
+      // Sort by priority (high to low)
+      if (a.priority != b.priority) {
+        return b.priority.compareTo(a.priority);
+      }
+      // Sort by creation date (newest first)
+      return b.createdAt.compareTo(a.createdAt);
+    });
 
     await _widgetService.updateWidget(
-      totalTasks: totalTasks,
-      completedTasks: completedTasksCount,
-      activeTasks: incompleteTasksCount,
-      upcomingTasks: upcomingTasks,
+      recentTasks: sortedTasks.take(4).toList(),
     );
   }
 }

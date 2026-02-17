@@ -174,6 +174,40 @@ class TaskTile extends StatelessWidget {
                         // Priority tag
                         PriorityTag(priority: priority, compact: true),
 
+                        // Reminder chip
+                        if (task.reminderEnabled && task.reminderTime != null)
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: context.rw(8),
+                              vertical: context.rh(4),
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary.withValues(alpha: 0.08),
+                              borderRadius: BorderRadius.circular(
+                                context.rw(6),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.notifications_active_rounded,
+                                  size: context.rw(12),
+                                  color: AppColors.tertiary,
+                                ),
+                                SizedBox(width: context.rw(4)),
+                                Text(
+                                  Helpers.formatTime(task.reminderTime!),
+                                  style: GoogleFonts.manrope(
+                                    fontSize: context.rf(11),
+                                    color: AppColors.tertiary,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
                         // Deadline chip
                         if (task.deadline != null)
                           Container(

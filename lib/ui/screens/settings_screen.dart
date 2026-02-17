@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../services/local_storage_service.dart';
@@ -25,11 +26,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
   final _rewardedAdManager = RewardedAdManager();
 
   bool _notificationsEnabled = true;
+  String _appVersion = '';
 
   @override
   void initState() {
     super.initState();
     _loadSettings();
+    _loadAppVersion();
+  }
+
+  Future<void> _loadAppVersion() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    setState(() {
+      _appVersion = packageInfo.version;
+    });
   }
 
   void _loadSettings() {
@@ -190,7 +200,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     context,
                     icon: Icons.info_rounded,
                     title: AppConstants.appName,
-                    subtitle: 'Version 1.3.0',
+                    subtitle: 'Version $_appVersion',
                   ),
                   SizedBox(height: context.rh(20)),
                   GestureDetector(
@@ -204,7 +214,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         style: GoogleFonts.manrope(
                           fontSize: context.rf(12),
                           fontWeight: FontWeight.w500,
-                          color: const Color.fromARGB(255, 29, 29, 29),
+                          color: const Color.fromARGB(255, 0, 0, 0),
                         ),
                       ),
                     ),
