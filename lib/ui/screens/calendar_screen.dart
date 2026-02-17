@@ -8,6 +8,7 @@ import '../../utils/constants.dart';
 import '../widgets/task_tile.dart';
 import '../widgets/empty_state.dart';
 import '../widgets/banner_ad_widget.dart';
+import '../widgets/native_ad_widget.dart';
 import 'add_task_screen.dart';
 
 class CalendarScreen extends StatefulWidget {
@@ -215,15 +216,29 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
     return ListView.builder(
       padding: EdgeInsets.only(bottom: context.rh(16)),
-      itemCount: tasks.length,
+      itemCount: tasks.length + (tasks.length ~/ 3),
       itemBuilder: (context, index) {
+        // Show ad every 3 items
+        if ((index + 1) % 4 == 0) {
+          final adIndex = index ~/ 4;
+          return NativeAdWidget(
+            screenId: 'calendar_screen_tasks_$adIndex',
+          );
+        }
+
+        // Calculate actual task index
+        final taskIndex = index - (index ~/ 4);
+        if (taskIndex >= tasks.length) {
+          return const SizedBox.shrink();
+        }
+
         return TaskTile(
-          task: tasks[index],
+          task: tasks[taskIndex],
           onTap: () {
             Navigator.pushNamed(
               context,
               AppRoutes.editTask,
-              arguments: tasks[index].id,
+              arguments: tasks[taskIndex].id,
             );
           },
         );

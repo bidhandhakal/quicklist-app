@@ -369,7 +369,7 @@ class _HomeScreenState extends State<HomeScreen>
     final itemsWithAds = <dynamic>[];
     for (int i = 0; i < tasks.length; i++) {
       itemsWithAds.add(tasks[i]);
-      if ((i + 1) % 6 == 0 && i != tasks.length - 1) {
+      if ((i + 1) % 3 == 0 && i != tasks.length - 1) {
         itemsWithAds.add('ad_$i');
       }
     }

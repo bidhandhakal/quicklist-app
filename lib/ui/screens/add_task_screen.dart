@@ -7,6 +7,7 @@ import '../../services/category_service.dart';
 import '../../utils/constants.dart';
 import '../../utils/validators.dart';
 import '../../utils/size_config.dart';
+import '../widgets/banner_ad_widget.dart';
 
 class AddTaskScreen extends StatefulWidget {
   final String? taskId;
@@ -543,6 +544,11 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   ),
                 ],
               ),
+
+              SizedBox(height: context.rh(16)),
+
+              // Banner Ad
+              const BannerAdWidget(screenId: 'add_task_screen'),
             ],
           ),
         ),

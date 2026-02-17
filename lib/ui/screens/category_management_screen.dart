@@ -9,6 +9,8 @@ import '../../utils/constants.dart';
 import '../../utils/size_config.dart';
 import '../widgets/task_tile.dart';
 import '../widgets/empty_state.dart';
+import '../widgets/banner_ad_widget.dart';
+import '../widgets/native_ad_widget.dart';
 import 'add_task_screen.dart';
 
 class CategoryManagementScreen extends StatefulWidget {
@@ -150,11 +152,25 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
                       horizontal: context.rw(16),
                       vertical: context.rh(8),
                     ),
-                    itemCount: _categories.length,
+                    itemCount: _categories.length + (_categories.length ~/ 3),
                     separatorBuilder: (context, index) =>
                         SizedBox(height: context.rh(10)),
                     itemBuilder: (context, index) {
-                      final category = _categories[index];
+                      // Show ad every 3 items
+                      if ((index + 1) % 4 == 0) {
+                        final adIndex = index ~/ 4;
+                        return NativeAdWidget(
+                          screenId: 'category_management_screen_$adIndex',
+                        );
+                      }
+
+                      // Calculate actual category index
+                      final categoryIndex = index - (index ~/ 4);
+                      if (categoryIndex >= _categories.length) {
+                        return const SizedBox.shrink();
+                      }
+
+                      final category = _categories[categoryIndex];
                       final categoryTasks = taskController.getTasksByCategory(
                         category.id,
                       );
@@ -293,6 +309,9 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
                 },
               ),
             ),
+
+            // Banner Ad
+            const BannerAdWidget(screenId: 'category_management_screen'),
           ],
         ),
       ),

@@ -80,16 +80,17 @@ Future<void> _initializeAdsInBackground() async {
     // Immediately start loading all ads in parallel (don't await)
     // This fires all requests simultaneously for maximum speed
     Future.microtask(() {
-      // Preload banner ads for all screens except home
+      // Preload banner ads for all screens
       ScreenAdManager.instance.preloadBannerAd('calendar_screen');
       ScreenAdManager.instance.preloadBannerAd('add_task_screen');
       ScreenAdManager.instance.preloadBannerAd('settings_screen');
       ScreenAdManager.instance.preloadBannerAd('category_screen');
       ScreenAdManager.instance.preloadBannerAd('gamification_screen');
+      ScreenAdManager.instance.preloadBannerAd('category_management_screen');
     });
 
     Future.microtask(() {
-      // Preload native ads
+      // Preload native ads for all screens and list positions
       ScreenAdManager.instance.preloadNativeAd('settings_screen');
       ScreenAdManager.instance.preloadNativeAd('home_screen');
       ScreenAdManager.instance.preloadNativeAd('gamification_screen_stats');
@@ -97,6 +98,16 @@ Future<void> _initializeAdsInBackground() async {
         'gamification_screen_achievements',
       );
       ScreenAdManager.instance.preloadNativeAd('category_screen_category_list');
+      
+      // Preload native ads for calendar screen task lists
+      ScreenAdManager.instance.preloadNativeAd('calendar_screen_tasks_0');
+      ScreenAdManager.instance.preloadNativeAd('calendar_screen_tasks_1');
+      ScreenAdManager.instance.preloadNativeAd('calendar_screen_tasks_2');
+      
+      // Preload native ads for category management screen
+      ScreenAdManager.instance.preloadNativeAd('category_management_screen_0');
+      ScreenAdManager.instance.preloadNativeAd('category_management_screen_1');
+      ScreenAdManager.instance.preloadNativeAd('category_management_screen_2');
     });
 
     // Load full-screen ads in parallel
