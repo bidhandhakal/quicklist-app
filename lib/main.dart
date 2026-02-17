@@ -101,14 +101,16 @@ Future<void> _initializeAdsInBackground() async {
       ScreenAdManager.instance.preloadNativeAd('category_screen_category_list');
       
       // Preload native ads for calendar screen task lists
-      ScreenAdManager.instance.preloadNativeAd('calendar_screen_tasks_0');
-      ScreenAdManager.instance.preloadNativeAd('calendar_screen_tasks_1');
-      ScreenAdManager.instance.preloadNativeAd('calendar_screen_tasks_2');
+      // Note: These preload a few ad slots, actual screens create more on-demand
+      ScreenAdManager.instance.preloadNativeAd('calendar_screen_tasks_ad_2');
+      ScreenAdManager.instance.preloadNativeAd('calendar_screen_tasks_ad_5');
+      ScreenAdManager.instance.preloadNativeAd('calendar_screen_tasks_ad_8');
       
       // Preload native ads for category management screen
-      ScreenAdManager.instance.preloadNativeAd('category_management_screen_0');
-      ScreenAdManager.instance.preloadNativeAd('category_management_screen_1');
-      ScreenAdManager.instance.preloadNativeAd('category_management_screen_2');
+      // Note: These preload a few ad slots, actual screens create more on-demand
+      ScreenAdManager.instance.preloadNativeAd('category_management_screen_ad_2');
+      ScreenAdManager.instance.preloadNativeAd('category_management_screen_ad_5');
+      ScreenAdManager.instance.preloadNativeAd('category_management_screen_ad_8');
     });
 
     // Load full-screen ads in parallel
