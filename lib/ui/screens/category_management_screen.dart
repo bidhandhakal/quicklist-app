@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../controllers/task_controller.dart';
 import '../../services/category_service.dart';
-import '../../models/category_model.dart';
+import '../../models/category_model.dart' as cat_model;
 import '../../utils/constants.dart';
 import '../../utils/size_config.dart';
 import '../widgets/task_tile.dart';
@@ -23,7 +23,7 @@ class CategoryManagementScreen extends StatefulWidget {
 
 class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
   final CategoryService _categoryService = CategoryService();
-  List<Category> _categories = [];
+  List<cat_model.Category> _categories = [];
 
   @override
   void initState() {
@@ -323,7 +323,7 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
     );
   }
 
-  void _showCategoryOptions(Category category) {
+  void _showCategoryOptions(cat_model.Category category) {
     showModalBottomSheet(
       context: context,
       backgroundColor: AppColors.surface,
@@ -475,7 +475,7 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
     );
   }
 
-  Future<void> _showCategoryDialog({Category? category}) async {
+  Future<void> _showCategoryDialog({cat_model.Category? category}) async {
     final nameController = TextEditingController(text: category?.name);
     final descController = TextEditingController(text: category?.description);
     Color selectedColor = category != null
@@ -735,7 +735,7 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
                         onTap: () async {
                           if (nameController.text.trim().isEmpty) return;
 
-                          final newCategory = Category(
+                          final newCategory = cat_model.Category(
                             id: category?.id ?? const Uuid().v4(),
                             name: nameController.text.trim(),
                             description: descController.text.trim().isEmpty
@@ -810,7 +810,7 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
 }
 
 class CategoryDetailScreen extends StatelessWidget {
-  final Category category;
+  final cat_model.Category category;
 
   const CategoryDetailScreen({super.key, required this.category});
 
