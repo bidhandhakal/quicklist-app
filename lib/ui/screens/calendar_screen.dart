@@ -237,14 +237,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
         }
 
         // Otherwise it's a task
-        final task = item;
         return TaskTile(
-          task: task,
+          task: item,
           onTap: () {
             Navigator.pushNamed(
               context,
               AppRoutes.editTask,
-              arguments: task.id,
+              arguments: item.id,
             );
           },
         );
