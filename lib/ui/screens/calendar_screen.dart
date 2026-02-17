@@ -214,31 +214,37 @@ class _CalendarScreenState extends State<CalendarScreen> {
       );
     }
 
+    // Create list with ads interspersed
+    final itemsWithAds = <dynamic>[];
+    for (int i = 0; i < tasks.length; i++) {
+      itemsWithAds.add(tasks[i]);
+      if ((i + 1) % 3 == 0 && i != tasks.length - 1) {
+        itemsWithAds.add('ad_$i');
+      }
+    }
+
     return ListView.builder(
       padding: EdgeInsets.only(bottom: context.rh(16)),
-      itemCount: tasks.length + (tasks.length ~/ 3),
+      itemCount: itemsWithAds.length,
       itemBuilder: (context, index) {
-        // Show ad every 3 items
-        if ((index + 1) % 4 == 0) {
-          final adIndex = index ~/ 4;
+        final item = itemsWithAds[index];
+        
+        // Check if this is an ad
+        if (item is String && item.startsWith('ad_')) {
           return NativeAdWidget(
-            screenId: 'calendar_screen_tasks_$adIndex',
+            screenId: 'calendar_screen_tasks_$item',
           );
         }
 
-        // Calculate actual task index
-        final taskIndex = index - (index ~/ 4);
-        if (taskIndex >= tasks.length) {
-          return const SizedBox.shrink();
-        }
-
+        // Otherwise it's a task
+        final task = item;
         return TaskTile(
-          task: tasks[taskIndex],
+          task: task,
           onTap: () {
             Navigator.pushNamed(
               context,
               AppRoutes.editTask,
-              arguments: tasks[taskIndex].id,
+              arguments: task.id,
             );
           },
         );
