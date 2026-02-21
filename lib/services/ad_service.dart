@@ -8,24 +8,19 @@ class AdService {
   AdService._internal();
 
   // Android Banner Ad Unit ID - Test
-  static const String _androidBannerAdUnitId =
-      'ca-app-pub-3940256099942544/6300978111';
+  static const String _androidBannerAdUnitId = '';
 
   // Android App Open Ad Unit ID - Test
-  static const String _androidAppOpenAdUnitId =
-      'ca-app-pub-3940256099942544/9257395921';
+  static const String _androidAppOpenAdUnitId = '';
 
   // Android Interstitial Ad Unit ID - Test
-  static const String _androidInterstitialAdUnitId =
-      'ca-app-pub-3940256099942544/1033173712';
+  static const String _androidInterstitialAdUnitId = '';
 
   // Android Rewarded Ad Unit ID - Test
-  static const String _androidRewardedAdUnitId =
-      'ca-app-pub-3940256099942544/5224354917';
+  static const String _androidRewardedAdUnitId = '';
 
   // Android Native Ad Unit ID - Test
-  static const String _androidNativeAdUnitId =
-      'ca-app-pub-3940256099942544/2247696110';
+  static const String _androidNativeAdUnitId = '';
 
   static String get bannerAdUnitId => _androidBannerAdUnitId;
   static String get appOpenAdUnitId => _androidAppOpenAdUnitId;

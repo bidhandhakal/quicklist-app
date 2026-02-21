@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:quicklist/utils/icon_map.dart';
 
 part 'category_model.g.dart';
 
@@ -35,8 +36,8 @@ class Category extends HiveObject {
   // Get Color object from colorValue
   Color get color => Color(colorValue);
 
-  // Get IconData from iconCodePoint
-  IconData get icon => IconData(iconCodePoint, fontFamily: 'MaterialIcons');
+  // Get IconData from iconCodePoint (uses const lookup for tree-shaking)
+  IconData get icon => resolveIcon(iconCodePoint);
 
   Category copyWith({
     String? id,
