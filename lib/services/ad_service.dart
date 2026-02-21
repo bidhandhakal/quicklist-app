@@ -7,19 +7,19 @@ class AdService {
   factory AdService() => _instance;
   AdService._internal();
 
-  // Android Banner Ad Unit ID - Test
+  // Android Banner Ad Unit ID - use Test ads ok
   static const String _androidBannerAdUnitId = '';
 
-  // Android App Open Ad Unit ID - Test
+  // Android App Open Ad Unit ID - use Test ads ok
   static const String _androidAppOpenAdUnitId = '';
 
-  // Android Interstitial Ad Unit ID - Test
+  // Android Interstitial Ad Unit ID -use Test ads ok
   static const String _androidInterstitialAdUnitId = '';
 
-  // Android Rewarded Ad Unit ID - Test
+  // Android Rewarded Ad Unit ID - use Test ads ok
   static const String _androidRewardedAdUnitId = '';
 
-  // Android Native Ad Unit ID - Test
+  // Android Native Ad Unit ID - use Test ads ok
   static const String _androidNativeAdUnitId = '';
 
   static String get bannerAdUnitId => _androidBannerAdUnitId;
