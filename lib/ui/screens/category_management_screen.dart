@@ -482,7 +482,7 @@ class _CategoryManagementScreenState extends State<CategoryManagementScreen> {
         ? Color(category.colorValue)
         : AppColors.categoryColors.first;
     IconData selectedIcon = category != null
-        ? IconData(category.iconCodePoint, fontFamily: 'MaterialIcons')
+        ? category.icon
         : Icons.category_rounded;
 
     await showModalBottomSheet(
